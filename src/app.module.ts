@@ -20,6 +20,7 @@ import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 import { LoggerMiddleware } from './common/logger.middleware';
+import { ProjectsModule } from './projects/projects.module';
 
 const configSchema = Joi.object({
   APP_PORT: Joi.number().default(3000),
@@ -98,6 +99,7 @@ const configSchema = Joi.object({
     }),
     UsersModule,
     AuthModule,
+    ProjectsModule,
   ],
   controllers: [AppController],
   providers: [
