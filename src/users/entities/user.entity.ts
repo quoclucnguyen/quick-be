@@ -1,6 +1,7 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { AbstractEntity } from '../../common/abstract.entity';
 import { Exclude } from 'class-transformer';
+import { UserGiftEntity } from 'src/gifts/entities/user-gift.entity';
 
 export enum UserRole {
   SA = 'SA',
@@ -77,6 +78,9 @@ export class User extends AbstractEntity {
     nullable: true,
   })
   firebaseToken: string;
+
+  @OneToMany(() => UserGiftEntity, (userGift) => userGift.user)
+  userGifts: UserGiftEntity[];
 }
 export interface LoggedInUser {
   id: number;
