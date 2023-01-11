@@ -24,6 +24,8 @@ import { ProjectsModule } from './projects/projects.module';
 import { GiftsModule } from './gifts/gifts.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { CustomersModule } from './customers/customers.module';
+import { LocationsModule } from './locations/locations.module';
+import { ImagesModule } from './images/images.module';
 
 const configSchema = Joi.object({
   APP_PORT: Joi.number().default(3000),
@@ -105,7 +107,9 @@ const configSchema = Joi.object({
     ProjectsModule,
     GiftsModule,
     UploadsModule,
-    CustomersModule
+    CustomersModule,
+    LocationsModule,
+    ImagesModule
   ],
   controllers: [AppController],
   providers: [

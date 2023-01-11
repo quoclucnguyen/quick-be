@@ -14,6 +14,9 @@ export class GiftEntity extends AbstractEntity {
   @OneToMany(() => UserGiftEntity, (userGift) => userGift.gift)
   userGifts: UserGiftEntity[];
 
-  @OneToMany(()=>CustomerEntity, customer=>customer.gift)
+  @OneToMany(() => CustomerEntity, (customer) => customer.gift)
   customers: CustomerEntity[];
+
+  @Column({ default: 0, nullable: true })
+  quantity: number;
 }

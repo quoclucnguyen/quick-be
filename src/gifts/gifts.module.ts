@@ -9,5 +9,6 @@ import { UserGiftEntity } from './entities/user-gift.entity';
   controllers: [GiftsController],
   providers: [GiftsService],
   imports: [TypeOrmModule.forFeature([GiftEntity, UserGiftEntity])],
+  exports: [GiftsService],
 })
-export class GiftsModule { }
+export class GiftsModule {}
