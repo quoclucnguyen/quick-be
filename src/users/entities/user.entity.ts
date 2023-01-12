@@ -1,16 +1,58 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { AbstractEntity } from '../../common/abstract.entity';
 import { Exclude } from 'class-transformer';
 import { UserGiftEntity } from 'src/gifts/entities/user-gift.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum UserRole {
   SA = 'SA',
   USER = 'USER',
   ADMIN = 'ADMIN',
+  HOTLINE = 'HOTLINE',
 }
 
 @Entity('users')
-export class User extends AbstractEntity {
+export class User {
+  @ApiProperty()
+  @PrimaryGeneratedColumn({ type: 'int' })
+  id: number;
+
+  @ApiProperty()
+  @CreateDateColumn({
+    type: 'timestamp',
+    name: 'created_at',
+  })
+  createdAt = new Date();
+
+  @ApiProperty()
+  @UpdateDateColumn({
+    type: 'timestamp',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+    name: 'updated_at',
+  })
+  updatedAt: Date;
+
+  @ApiProperty()
+  @Exclude()
+  @Column('int', { name: 'created_by', nullable: true })
+  createdBy: number;
+
+  @ApiProperty()
+  @Exclude()
+  @Column('int', { name: 'updated_by', nullable: true })
+  updatedBy: number;
+
+  @ApiProperty()
+  @Column('boolean', { name: 'is_active', default: true })
+  isActive: boolean;
+
   @Column({
     name: 'username',
     type: 'varchar',
@@ -82,6 +124,7 @@ export class User extends AbstractEntity {
   @OneToMany(() => UserGiftEntity, (userGift) => userGift.user)
   userGifts: UserGiftEntity[];
 }
+
 export interface LoggedInUser {
   id: number;
   username: string;

@@ -1,23 +1,15 @@
-import {
-  Entity,
-  Column,
-  ManyToOne,
-  JoinColumn,
-  OneToOne,
-  OneToMany,
-} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { GiftEntity } from 'src/gifts/entities/gift.entity';
-import { Province } from 'src/locations/entities/province.entity';
-import { District } from 'src/locations/entities/district.entity';
-import { Ward } from 'src/locations/entities/ward.entity';
 import { ImageEntity } from 'src/images/entities/image.entity';
-import { CustomerHistoryEntity } from './customer-history.entity';
-import { CustomerActionHistoryEntity } from './customer-action-history.entity';
+import { District } from 'src/locations/entities/district.entity';
+import { Province } from 'src/locations/entities/province.entity';
+import { Ward } from 'src/locations/entities/ward.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { CustomerEntity } from './customer.entity';
 
-@Entity({ name: 'customer' })
-export class CustomerEntity extends AbstractEntity {
+@Entity('customer_histories')
+export class CustomerHistoryEntity extends AbstractEntity {
   @ApiProperty()
   @Column({
     name: 'name',
@@ -64,15 +56,12 @@ export class CustomerEntity extends AbstractEntity {
   })
   type: 'customer' | 'user';
 
-  @ApiProperty()
   @Column({ name: 'province_id' })
   provinceId: number;
 
-  @ApiProperty()
   @Column({ name: 'district_id' })
   districtId: number;
 
-  @ApiProperty()
   @Column({ name: 'ward_id' })
   wardId: number;
 
@@ -91,16 +80,13 @@ export class CustomerEntity extends AbstractEntity {
   @Column({ name: 'image_sn_id' })
   imageSNId: number;
 
-  @ApiProperty()
   @OneToOne(() => ImageEntity, (image) => image.customerImageSn)
   @JoinColumn({ name: 'image_sn_id' })
   imageSn: ImageEntity;
 
-  @ApiProperty()
   @Column({ name: 'image_recipt_id' })
   imageReciptId: number;
 
-  @ApiProperty()
   @OneToOne(() => ImageEntity, (image) => image.customerImageSn)
   @JoinColumn({ name: 'image_recipt_id' })
   imageRecipt: ImageEntity;
@@ -108,45 +94,20 @@ export class CustomerEntity extends AbstractEntity {
   @Column({ name: 'gift_id', nullable: true })
   giftId: number;
 
-  @ApiProperty()
   @Column({
     name: 'status',
     type: 'enum',
     enum: ['new', 'done', 'reject', 'inprocess'],
-    default: 'new',
   })
   status: 'new' | 'done' | 'reject' | 'inprocess';
 
-  @ApiProperty()
-  @OneToMany(() => CustomerHistoryEntity, (history) => history.customer, {
-    cascade: true,
-  })
-  customerHistories: CustomerHistoryEntity[];
+  @Column({ name: 'customer_id' })
+  customerId: number;
 
-  @ApiProperty()
-  @Column({ nullable: true, name: 'reject_reason' })
-  rejectReason: string;
+  @ManyToOne(() => CustomerEntity, (customer) => customer.customerHistories)
+  @JoinColumn({ name: 'customer_id' })
+  customer: CustomerEntity;
 
-  @ApiProperty()
-  @Column({ name: 'id_card_number' })
-  idCardNumber: string;
-
-  @ApiProperty()
-  @Column({ name: 'date_purchase' })
-  datePurchase: Date;
-
-  @ApiProperty()
-  @Column({ name: 'series_purchase' })
-  seriesPurchase: string;
-
-  @ApiProperty()
   @Column({ nullable: true })
   reason: string;
-
-  @OneToMany(
-    () => CustomerActionHistoryEntity,
-    (customerActionHistory) => customerActionHistory.customer,
-    { cascade: true },
-  )
-  customerActionHistories: CustomerActionHistoryEntity[];
 }

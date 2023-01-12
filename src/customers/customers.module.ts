@@ -5,12 +5,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomerEntity } from './entities/customer.entity';
 import { ImagesModule } from 'src/images/images.module';
 import { GiftsModule } from 'src/gifts/gifts.module';
+import { CustomerHistoryEntity } from './entities/customer-history.entity';
+import { CustomerActionHistoryEntity } from './entities/customer-action-history.entity';
 
 @Module({
   controllers: [CustomersController],
   providers: [CustomersService],
   imports: [
-    TypeOrmModule.forFeature([CustomerEntity]),
+    TypeOrmModule.forFeature([
+      CustomerEntity,
+      CustomerHistoryEntity,
+      CustomerActionHistoryEntity,
+    ]),
     ImagesModule,
     GiftsModule,
   ],

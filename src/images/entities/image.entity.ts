@@ -45,8 +45,11 @@ export class ImageEntity extends AbstractEntity {
   })
   height: number;
 
-  @OneToOne(() => CustomerEntity, (customer) => customer.image)
-  customer: CustomerEntity;
+  @OneToOne(() => CustomerEntity, (customer) => customer.imageSn)
+  customerImageSn: CustomerEntity;
+
+  @OneToOne(() => CustomerEntity, (customer) => customer.imageRecipt)
+  customerImageRecipt: CustomerEntity;
 }
 
 export enum ImageType {

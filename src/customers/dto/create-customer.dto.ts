@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateCustomerDto {
   @ApiProperty()
@@ -38,7 +38,10 @@ export class CreateCustomerDto {
   type: 'customer' | 'user';
 
   @ApiProperty()
-  file: Express.Multer.File;
+  fileSN: Express.Multer.File;
+
+  @ApiProperty()
+  fileRecipt: Express.Multer.File;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -53,5 +56,22 @@ export class CreateCustomerDto {
   @ApiProperty()
   @IsNotEmpty()
   @Type(() => Number)
-  wardId: number;l
+  wardId: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  @Transform((value: any) => value.trim(), { toPlainOnly: true })
+  idCardNumber: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsDate()
+  datePurchase: Date;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  @Transform((value: any) => value.trim(), { toPlainOnly: true })
+  seriesPurchase: string;
 }
