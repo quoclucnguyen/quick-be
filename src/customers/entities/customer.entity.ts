@@ -92,7 +92,7 @@ export class CustomerEntity extends AbstractEntity {
   imageSNId: number;
 
   @ApiProperty()
-  @OneToOne(() => ImageEntity, (image) => image.customerImageSn)
+  @ManyToOne(() => ImageEntity, (image) => image.customerImageSn)
   @JoinColumn({ name: 'image_sn_id' })
   imageSn: ImageEntity;
 
@@ -101,7 +101,7 @@ export class CustomerEntity extends AbstractEntity {
   imageReciptId: number;
 
   @ApiProperty()
-  @OneToOne(() => ImageEntity, (image) => image.customerImageSn)
+  @ManyToOne(() => ImageEntity, (image) => image.customerImageSn)
   @JoinColumn({ name: 'image_recipt_id' })
   imageRecipt: ImageEntity;
 

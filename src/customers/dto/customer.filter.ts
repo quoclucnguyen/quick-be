@@ -1,48 +1,48 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CustomerFilter {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   status?: 'new' | 'done' | 'reject' | 'inprocess';
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   provinceId?: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   fromDate?: Date;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   toDate?: Date;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   take: 10;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   skip: 0;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   phone?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   name?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   serialNumber?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   email?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   type?: 'customer' | 'user';
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   giftId: number | null;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   idCardNumber?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   seriesPurchase?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   datePurchase?: Date;
 }

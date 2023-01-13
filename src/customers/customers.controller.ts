@@ -7,7 +7,9 @@ import {
   Post,
   Query,
   UploadedFile,
+  UploadedFiles,
   UseInterceptors,
+  ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -22,9 +24,14 @@ import { LoggedInUser } from 'src/users/entities/user.entity';
 import { CustomersService } from './customers.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { CustomerEntity } from './entities/customer.entity';
-import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 import { CustomerFilter } from './dto/customer.filter';
 import { EditCustomerDto } from './dto/edit-customer.dto';
+import { GiftEntity } from 'src/gifts/entities/gift.entity';
+import { RejectDto } from './dto/reject.dto';
 
 @ApiTags('Customers')
 @Controller('customers')
@@ -34,8 +41,12 @@ export class CustomersController {
   @Post()
   @ApiOperation({ summary: 'Nhập thông tin khách hàng' })
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('fileSN'))
-  @UseInterceptors(FileInterceptor('fileReceipt'))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'fileSN', maxCount: 1 },
+      { name: 'fileReceipt', maxCount: 1 },
+    ]),
+  )
   @ApiBody({
     schema: {
       type: 'object',
@@ -83,12 +94,16 @@ export class CustomersController {
   })
   async create(
     @Body() createCustomerDto: CreateCustomerDto,
-    @UploadedFile() fileSN: Express.Multer.File,
-    @UploadedFile() fileReceipt: Express.Multer.File,
+    @UploadedFiles()
+    files: {
+      fileSN: Express.Multer.File[];
+      fileReceipt: Express.Multer.File[];
+    },
     @CurrentUser() user: LoggedInUser,
-  ): Promise<CustomerEntity> {
-    createCustomerDto.fileSN = fileSN;
-    createCustomerDto.fileRecipt = fileReceipt;
+  ) {
+    const { fileSN, fileReceipt } = files;
+    createCustomerDto.fileSN = fileSN[0];
+    createCustomerDto.fileRecipt = fileReceipt[0];
     return this.customersService.create(createCustomerDto, user);
   }
 
@@ -103,16 +118,12 @@ export class CustomersController {
   }
 
   @Patch('/:id')
-  @ApiOperation({ summary: 'Nhập thông tin khách hàng' })
-  @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('fileSN'))
-  @UseInterceptors(FileInterceptor('fileReceipt'))
+  @ApiOperation({ summary: 'Sửa thông tin khách hàng' })
   @ApiBody({
     schema: {
       type: 'object',
       required: [
         'name',
-        'phone',
         'serialNumber',
         'email',
         'provinceId',
@@ -121,19 +132,20 @@ export class CustomersController {
         'idCardNumber',
         'datePurchase',
         'seriesPurchase',
+        'reason',
       ],
       properties: {
         name: { type: 'string' },
-        phone: { type: 'string' },
         serialNumber: { type: 'string' },
-        addess: { type: 'string' },
+        address: { type: 'string' },
         idCardNumber: { type: 'string' },
-        datePurchase: { type: 'date' },
+        datePurchase: { type: 'string', format: 'date-time' },
         seriesPurchase: { type: 'string' },
+        reason: { type: 'string' },
         email: { type: 'string' },
-        provinceId: { type: 'int' },
-        districtId: { type: 'int' },
-        wardId: { type: 'int' },
+        provinceId: { type: 'number' },
+        districtId: { type: 'number' },
+        wardId: { type: 'number' },
       },
     },
   })
@@ -147,6 +159,15 @@ export class CustomersController {
 
   @Get('/confirm/:id')
   confirm(@CurrentUser() user: LoggedInUser, @Param('id') id: number) {
-    
+    return this.customersService.confirm(id, user);
+  }
+
+  @Post('/reject/:id')
+  reject(
+    @CurrentUser() user: LoggedInUser,
+    @Param('id') id: number,
+    @Body() input: RejectDto,
+  ) {
+    return this.customersService.reject(id, input.reason, user);
   }
 }

@@ -80,14 +80,14 @@ export class CustomerHistoryEntity extends AbstractEntity {
   @Column({ name: 'image_sn_id' })
   imageSNId: number;
 
-  @OneToOne(() => ImageEntity, (image) => image.customerImageSn)
+  @ManyToOne(() => ImageEntity, (image) => image.customerImageSn)
   @JoinColumn({ name: 'image_sn_id' })
   imageSn: ImageEntity;
 
   @Column({ name: 'image_recipt_id' })
   imageReciptId: number;
 
-  @OneToOne(() => ImageEntity, (image) => image.customerImageSn)
+  @ManyToOne(() => ImageEntity, (image) => image.customerImageSn)
   @JoinColumn({ name: 'image_recipt_id' })
   imageRecipt: ImageEntity;
 

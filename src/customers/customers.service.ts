@@ -8,10 +8,10 @@ import { CustomerEntity } from './entities/customer.entity';
 import { ImagesService } from 'src/images/images.service';
 import { GiftsService } from 'src/gifts/gifts.service';
 import { CustomerFilter } from './dto/customer.filter';
-import { number } from 'joi';
 import { CustomerHistoryEntity } from './entities/customer-history.entity';
 import { EditCustomerDto } from './dto/edit-customer.dto';
 import { CustomerActionHistoryEntity } from './entities/customer-action-history.entity';
+import { GiftEntity } from 'src/gifts/entities/gift.entity';
 
 @Injectable()
 export class CustomersService extends AbstractService<CustomerEntity> {
@@ -21,21 +21,20 @@ export class CustomersService extends AbstractService<CustomerEntity> {
     private dataSource: DataSource,
     private readonly imagesService: ImagesService,
     private readonly giftsService: GiftsService,
-    private customerHistoryRepository: Repository<CustomerHistoryEntity>,
-    private customerActionHistoryRepository: Repository<CustomerActionHistoryEntity>,
+    @InjectRepository(CustomerHistoryEntity)
+    private readonly customerHistoryRepository: Repository<CustomerHistoryEntity>,
+    @InjectRepository(CustomerActionHistoryEntity)
+    private readonly customerActionHistoryRepository: Repository<CustomerActionHistoryEntity>,
   ) {
     super(CustomersService.name, repository);
   }
 
-  async create(
-    createCustomerDto: CreateCustomerDto,
-    user: LoggedInUser,
-  ): Promise<CustomerEntity> {
+  async create(createCustomerDto: CreateCustomerDto, user: LoggedInUser) {
     /**
      * Kiểm tra serialNumber
      */
 
-    const serialNumberEntity = this.repository.findOne({
+    const serialNumberEntity = await this.repository.findOne({
       where: {
         serialNumber: createCustomerDto.serialNumber,
         isActive: true,
@@ -51,14 +50,14 @@ export class CustomersService extends AbstractService<CustomerEntity> {
      * Upload hình ảnh
      */
     const imageSNId = await this.imagesService.uploadFile(
-      createCustomerDto.fileSN.buffer,
+      await createCustomerDto.fileSN.buffer,
       createCustomerDto.fileSN.originalname,
       user,
       createCustomerDto.type + '_SN',
     );
 
     const imageReciptId = await this.imagesService.uploadFile(
-      createCustomerDto.fileRecipt.buffer,
+      await createCustomerDto.fileRecipt.buffer,
       createCustomerDto.fileRecipt.originalname,
       user,
       createCustomerDto.type + '_RECEIPT',
@@ -70,10 +69,10 @@ export class CustomersService extends AbstractService<CustomerEntity> {
     customer.imageReciptId = imageReciptId;
 
     const gifts = await this.giftsService.findAll({
-      where: { isActive: true, quantity: MoreThan(0) },
+      where: { isActive: true, quantity: MoreThan(0), id: MoreThan(0) },
     });
     if (gifts.length === 0) {
-      customer.gift = null;
+      customer.giftId = 0;
     } else {
       const gift = gifts[Math.floor(Math.random() * gifts.length)];
       customer.giftId = gift.id;
@@ -90,12 +89,23 @@ export class CustomersService extends AbstractService<CustomerEntity> {
      * Thêm vào history
      */
     const history = this.customerHistoryRepository.create(customer);
+    history.createdBy = user.id;
     customer.customerHistories = [history];
     const actionHistory = this.customerActionHistoryRepository.create();
     actionHistory.action = 'new';
+    actionHistory.createdBy = user.id;
     customer.customerActionHistories = [actionHistory];
 
-    return this.repository.save(customer);
+    await this.repository.save(customer);
+    const resultGift = await this.giftsService.findOne({
+      where: { id: customer.giftId },
+    });
+
+    return {
+      name: resultGift.name,
+      code: resultGift.code,
+      imageUrl: resultGift.imageUrl,
+    };
   }
 
   async findAllWithFilter(input: CustomerFilter) {
@@ -140,6 +150,14 @@ export class CustomersService extends AbstractService<CustomerEntity> {
   async detail(id: number) {
     return this.repository.findOne({
       where: { id: id, isActive: true },
+      relations: {
+        customerActionHistories: true,
+        customerHistories: true,
+        gift: true,
+        province: true,
+        district: true,
+        ward: true,
+      },
     });
   }
 
@@ -233,7 +251,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
     }
   }
 
-  async reject(id: number, user: LoggedInUser) {
+  async reject(id: number, reason: string, user: LoggedInUser) {
     const customer = await this.repository.findOne({
       where: { id, isActive: true },
       relations: {
@@ -248,6 +266,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
       case 'new':
       case 'done':
         customer.status = 'reject';
+        customer.reason = reason;
         customer.updatedBy = user.id;
         await this.repository.save(customer);
         if (customer.giftId) {

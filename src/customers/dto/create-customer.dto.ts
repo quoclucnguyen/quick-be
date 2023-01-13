@@ -66,7 +66,7 @@ export class CreateCustomerDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsDate()
+  @Type(() => Date)
   datePurchase: Date;
 
   @ApiProperty()

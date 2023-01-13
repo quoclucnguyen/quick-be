@@ -1,7 +1,7 @@
 import { Transform } from 'class-transformer';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { CustomerEntity } from 'src/customers/entities/customer.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 
 @Entity('images')
 export class ImageEntity extends AbstractEntity {
@@ -45,10 +45,10 @@ export class ImageEntity extends AbstractEntity {
   })
   height: number;
 
-  @OneToOne(() => CustomerEntity, (customer) => customer.imageSn)
+  @OneToMany(() => CustomerEntity, (customer) => customer.imageSn)
   customerImageSn: CustomerEntity;
 
-  @OneToOne(() => CustomerEntity, (customer) => customer.imageRecipt)
+  @OneToMany(() => CustomerEntity, (customer) => customer.imageRecipt)
   customerImageRecipt: CustomerEntity;
 }
 
