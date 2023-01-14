@@ -65,15 +65,15 @@ export class CustomerEntity extends AbstractEntity {
   type: 'customer' | 'user';
 
   @ApiProperty()
-  @Column({ name: 'province_id' })
+  @Column({ name: 'province_id', nullable: true })
   provinceId: number;
 
   @ApiProperty()
-  @Column({ name: 'district_id' })
+  @Column({ name: 'district_id', nullable: true })
   districtId: number;
 
   @ApiProperty()
-  @Column({ name: 'ward_id' })
+  @Column({ name: 'ward_id', nullable: true })
   wardId: number;
 
   @ManyToOne(() => Province, (province) => province.customers)

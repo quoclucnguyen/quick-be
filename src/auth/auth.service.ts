@@ -18,6 +18,8 @@ export class AuthService {
       where: { username: username, isActive: true },
     });
     if (user && (await bcrypt.compare(pass, user.passwordHash))) {
+      user.token = await bcrypt.hash(new Date().getTime().toString(), 10);
+      await this.usersService.save(user);
       return user;
     }
     return null;
@@ -26,9 +28,10 @@ export class AuthService {
   async login(user: User) {
     const payload = {
       username: user.username,
-      id: user.id,
+      sub: user.id,
       role: user.role,
       name: user.name,
+      token: user.token,
     };
     return {
       accessToken: this.jwtService.sign(payload),

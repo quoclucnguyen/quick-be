@@ -123,6 +123,31 @@ export class User {
 
   @OneToMany(() => UserGiftEntity, (userGift) => userGift.user)
   userGifts: UserGiftEntity[];
+
+  @Exclude()
+  @Column({
+    name: 'token',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  token: string;
+
+  @ApiProperty()
+  @Column({ name: 'province_id', nullable: true })
+  provinceId: number;
+
+  @ApiProperty()
+  @Column({ name: 'district_id', nullable: true })
+  districtId: number;
+
+  @ApiProperty()
+  @Column({ name: 'ward_id', nullable: true })
+  wardId: number;
+
+  @ApiProperty()
+  @Column({ name: 'address', nullable: true })
+  address: string;
 }
 
 export interface LoggedInUser {

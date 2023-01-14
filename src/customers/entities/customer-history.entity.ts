@@ -56,13 +56,13 @@ export class CustomerHistoryEntity extends AbstractEntity {
   })
   type: 'customer' | 'user';
 
-  @Column({ name: 'province_id' })
+  @Column({ name: 'province_id', nullable: true })
   provinceId: number;
 
-  @Column({ name: 'district_id' })
+  @Column({ name: 'district_id', nullable: true })
   districtId: number;
 
-  @Column({ name: 'ward_id' })
+  @Column({ name: 'ward_id', nullable: true })
   wardId: number;
 
   @ManyToOne(() => Province, (province) => province.customers)

@@ -30,7 +30,7 @@ export class ImagesService extends AbstractService<ImageEntity> {
   async uploadFile(
     createReadStream: any,
     filename: string,
-    user: LoggedInUser,
+    user?: LoggedInUser,
     type: string = '',
   ): Promise<number> {
     const today = new Date();
@@ -46,7 +46,7 @@ export class ImagesService extends AbstractService<ImageEntity> {
     return upload(createReadStream, filenameOnServer, path, url)
       .then(async (result) => {
         if (result) {
-          const image = await this.create(filenameOnServer, url, user.id);
+          const image = await this.create(filenameOnServer, url, user?.id);
           return image.id;
         } else {
           return 0;

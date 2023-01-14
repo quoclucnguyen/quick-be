@@ -29,7 +29,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
     super(CustomersService.name, repository);
   }
 
-  async create(createCustomerDto: CreateCustomerDto, user: LoggedInUser) {
+  async create(createCustomerDto: CreateCustomerDto, user?: LoggedInUser) {
     /**
      * Kiểm tra serialNumber
      */
@@ -64,7 +64,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
     );
 
     const customer = this.repository.create(createCustomerDto);
-    customer.createdBy = user.id;
+    customer.createdBy = user?.id;
     customer.imageSNId = imageSNId;
     customer.imageReciptId = imageReciptId;
 
@@ -89,11 +89,11 @@ export class CustomersService extends AbstractService<CustomerEntity> {
      * Thêm vào history
      */
     const history = this.customerHistoryRepository.create(customer);
-    history.createdBy = user.id;
+    history.createdBy = user?.id;
     customer.customerHistories = [history];
     const actionHistory = this.customerActionHistoryRepository.create();
     actionHistory.action = 'new';
-    actionHistory.createdBy = user.id;
+    actionHistory.createdBy = user?.id;
     customer.customerActionHistories = [actionHistory];
 
     await this.repository.save(customer);
