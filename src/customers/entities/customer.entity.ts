@@ -15,6 +15,7 @@ import { Ward } from 'src/locations/entities/ward.entity';
 import { ImageEntity } from 'src/images/entities/image.entity';
 import { CustomerHistoryEntity } from './customer-history.entity';
 import { CustomerActionHistoryEntity } from './customer-action-history.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity({ name: 'customer' })
 export class CustomerEntity extends AbstractEntity {
@@ -149,4 +150,9 @@ export class CustomerEntity extends AbstractEntity {
     { cascade: true },
   )
   customerActionHistories: CustomerActionHistoryEntity[];
+
+  @ApiProperty()
+  @ManyToOne(() => User, (user) => user.customers)
+  @JoinColumn({ name: 'created_by' })
+  createdByUser: User;
 }

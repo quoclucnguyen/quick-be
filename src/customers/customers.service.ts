@@ -141,6 +141,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
         relations: {
           imageRecipt: true,
           imageSn: true,
+          createdByUser: true,
         },
       })
       .then(([entities, count]) => {

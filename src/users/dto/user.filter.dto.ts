@@ -7,9 +7,9 @@ export class UserFilter {
   @ApiProperty()
   skip = 0;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   username?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   name?: string;
 }

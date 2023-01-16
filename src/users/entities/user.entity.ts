@@ -10,6 +10,7 @@ import { AbstractEntity } from '../../common/abstract.entity';
 import { Exclude } from 'class-transformer';
 import { UserGiftEntity } from 'src/gifts/entities/user-gift.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { CustomerEntity } from 'src/customers/entities/customer.entity';
 
 export enum UserRole {
   SA = 'SA',
@@ -148,6 +149,10 @@ export class User {
   @ApiProperty()
   @Column({ name: 'address', nullable: true })
   address: string;
+
+  @ApiProperty()
+  @OneToMany(() => CustomerEntity, (customer) => customer.createdByUser)
+  customers: CustomerEntity[];
 }
 
 export interface LoggedInUser {
