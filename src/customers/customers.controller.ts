@@ -44,8 +44,10 @@ import { CreateCustomerUserDto } from './dto/create-customer-user.dto';
 @Controller('customers')
 @ApiBearerAuth()
 export class CustomersController {
-  constructor(private readonly customersService: CustomersService,
-    private readonly usersService: UsersService) { }
+  constructor(
+    private readonly customersService: CustomersService,
+    private readonly usersService: UsersService,
+  ) {}
 
   async create(
     @Body() createCustomerDto: CreateCustomerDto,
@@ -92,11 +94,17 @@ export class CustomersController {
       properties: {
         name: { type: 'string' },
         phone: { type: 'string' },
-        serialNumber: { type: 'string' },
-        addess: { type: 'string' },
-        idCardNumber: { type: 'string' },
-        datePurchase: { type: 'date' },
-        seriesPurchase: { type: 'string' },
+        serialNumber: { type: 'string', description: 'Mã S/N' },
+        addess: {
+          type: 'string',
+          description: 'Số nhà, tên đường, tổ/ấp/thôn,....',
+        },
+        idCardNumber: { type: 'string', description: 'Số CMND/CCCD' },
+        datePurchase: {
+          type: 'date',
+          description: 'Ngày mua fomart `YYYY-MM-DD`',
+        },
+        seriesPurchase: { type: 'string', description: 'Dòng máy' },
         email: { type: 'string' },
         provinceId: { type: 'int' },
         districtId: { type: 'int' },
@@ -104,10 +112,12 @@ export class CustomersController {
         fileSN: {
           type: 'string',
           format: 'binary',
+          description: 'Hình chụp mã S/N',
         },
         fileReceipt: {
           type: 'string',
           format: 'binary',
+          description: 'Hình chụp hóa đơn',
         },
       },
     },
@@ -139,7 +149,7 @@ export class CustomersController {
         break;
       case UserRole.USER:
       default:
-        throw new ForbiddenException()
+        throw new ForbiddenException();
     }
     return this.customersService.findAllWithFilter(input);
   }
@@ -159,9 +169,6 @@ export class CustomersController {
         'name',
         'serialNumber',
         'email',
-        'provinceId',
-        'districtId',
-        'wardId',
         'idCardNumber',
         'datePurchase',
         'seriesPurchase',
@@ -174,7 +181,7 @@ export class CustomersController {
         idCardNumber: { type: 'string' },
         datePurchase: { type: 'string', format: 'date-time' },
         seriesPurchase: { type: 'string' },
-        reason: { type: 'string' },
+        reason: { type: 'string', description: 'Lý do chỉnh sửa' },
         email: { type: 'string' },
         provinceId: { type: 'number' },
         districtId: { type: 'number' },
@@ -262,7 +269,9 @@ export class CustomersController {
     createCustomerDto.fileSN = fileSN[0];
     createCustomerDto.fileRecipt = fileReceipt[0];
     createCustomerDto.type = 'user';
-    const userEntity = await this.usersService.findOne({ where: { id: user.id } });
+    const userEntity = await this.usersService.findOne({
+      where: { id: user.id },
+    });
     createCustomerDto.provinceId = userEntity.provinceId;
     createCustomerDto.districtId = userEntity.districtId;
     createCustomerDto.wardId = userEntity.wardId;

@@ -140,7 +140,7 @@ export class CustomerEntity extends AbstractEntity {
   seriesPurchase: string;
 
   @ApiProperty()
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'text' })
   reason: string;
 
   @OneToMany(

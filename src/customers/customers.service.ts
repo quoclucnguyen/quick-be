@@ -138,6 +138,10 @@ export class CustomersService extends AbstractService<CustomerEntity> {
         order: {
           id: 'DESC',
         },
+        relations: {
+          imageRecipt: true,
+          imageSn: true,
+        },
       })
       .then(([entities, count]) => {
         return {
