@@ -59,6 +59,7 @@ const configSchema = Joi.object({
   SA_PASSWORD: Joi.string().required(),
   RECAPTCHA_SECRET_KEY: Joi.string().required(),
   CUSTOMER_ACTION_NAME: Joi.string().required(),
+  ENV: Joi.string().valid('dev', 'prod').required(),
 });
 
 @Module({

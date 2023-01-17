@@ -140,13 +140,15 @@ export class CustomersController {
     },
     @CurrentUser() user: LoggedInUser,
   ) {
-    const result = await this.recaptchaValidator.validate({
-      response: createCustomerDto.recaptchaToken,
-      score: 0.8,
-      action: this.configService.get<string>('CUSTOMER_ACTION_NAME'),
-    });
-    if (!result.success) {
-      throw new GoogleRecaptchaException(result.errors);
+    if (this.configService.get<string>('ENV') === 'prod') {
+      const result = await this.recaptchaValidator.validate({
+        response: createCustomerDto.recaptchaToken,
+        score: 0.8,
+        action: this.configService.get<string>('CUSTOMER_ACTION_NAME'),
+      });
+      if (!result.success) {
+        throw new GoogleRecaptchaException(result.errors);
+      }
     }
     const { fileSN, fileReceipt } = files;
     createCustomerDto.fileSN = fileSN[0];
