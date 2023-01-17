@@ -3,6 +3,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { UserGiftEntity } from './user-gift.entity';
 import { CustomerEntity } from 'src/customers/entities/customer.entity';
 import { GiftTransactionEntity } from './gift-transaction.entity';
+import { Transform } from 'class-transformer';
 
 @Entity('gifts')
 export class GiftEntity extends AbstractEntity {
@@ -21,6 +22,9 @@ export class GiftEntity extends AbstractEntity {
   @Column({ default: 0, nullable: true })
   quantity: number;
 
+  @Transform((value) => {
+    return process.env.APP_HOST + value.value;
+  })
   @Column({ name: 'image_url', nullable: true })
   imageUrl: string;
 
