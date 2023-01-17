@@ -26,6 +26,8 @@ import { UploadsModule } from './uploads/uploads.module';
 import { CustomersModule } from './customers/customers.module';
 import { LocationsModule } from './locations/locations.module';
 import { ImagesModule } from './images/images.module';
+import { GoogleRecaptchaModule } from '@nestlab/google-recaptcha';
+import { IncomingMessage } from 'http';
 
 const configSchema = Joi.object({
   APP_PORT: Joi.number().default(3000),
@@ -55,6 +57,8 @@ const configSchema = Joi.object({
   JWT_SECRET: Joi.string().required(),
   JWT_EXPIRES: Joi.string().required(),
   SA_PASSWORD: Joi.string().required(),
+  RECAPTCHA_SECRET_KEY: Joi.string().required(),
+  CUSTOMER_ACTION_NAME: Joi.string().required(),
 });
 
 @Module({
@@ -109,7 +113,18 @@ const configSchema = Joi.object({
     UploadsModule,
     CustomersModule,
     LocationsModule,
-    ImagesModule
+    ImagesModule,
+    GoogleRecaptchaModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secretKey: configService.get<string>('RECAPTCHA_SECRET_KEY'),
+        actions: [configService.get<string>('CUSTOMER_ACTION_NAME')],
+        score: 0.8,
+        response: (req: IncomingMessage) =>
+          (req.headers.recaptcha || '').toString(),
+      }),
+    }),
   ],
   controllers: [AppController],
   providers: [

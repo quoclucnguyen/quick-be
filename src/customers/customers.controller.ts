@@ -39,6 +39,11 @@ import { Roles } from 'src/auth/roles.decorator';
 import { UsersService } from 'src/users/users.service';
 import { use } from 'passport';
 import { CreateCustomerUserDto } from './dto/create-customer-user.dto';
+import {
+  GoogleRecaptchaException,
+  GoogleRecaptchaValidator,
+} from '@nestlab/google-recaptcha';
+import { ConfigService } from '@nestjs/config';
 
 @ApiTags('Customers')
 @Controller('customers')
@@ -47,6 +52,8 @@ export class CustomersController {
   constructor(
     private readonly customersService: CustomersService,
     private readonly usersService: UsersService,
+    private readonly recaptchaValidator: GoogleRecaptchaValidator,
+    private readonly configService: ConfigService,
   ) {}
 
   async create(
@@ -90,8 +97,10 @@ export class CustomersController {
         'idCardNumber',
         'datePurchase',
         'seriesPurchase',
+        'recaptchaToken',
       ],
       properties: {
+        recaptchaToken: { type: 'string' },
         name: { type: 'string' },
         phone: { type: 'string' },
         serialNumber: { type: 'string', description: 'Mã S/N' },
@@ -131,6 +140,14 @@ export class CustomersController {
     },
     @CurrentUser() user: LoggedInUser,
   ) {
+    const result = await this.recaptchaValidator.validate({
+      response: createCustomerDto.recaptchaToken,
+      score: 0.8,
+      action: this.configService.get<string>('CUSTOMER_ACTION_NAME'),
+    });
+    if (!result.success) {
+      throw new GoogleRecaptchaException(result.errors);
+    }
     const { fileSN, fileReceipt } = files;
     createCustomerDto.fileSN = fileSN[0];
     createCustomerDto.fileRecipt = fileReceipt[0];

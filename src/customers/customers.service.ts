@@ -12,6 +12,8 @@ import { CustomerHistoryEntity } from './entities/customer-history.entity';
 import { EditCustomerDto } from './dto/edit-customer.dto';
 import { CustomerActionHistoryEntity } from './entities/customer-action-history.entity';
 import { GiftEntity } from 'src/gifts/entities/gift.entity';
+import { endOfDate, beginOfDate } from 'src/common/helper.common';
+import { GoogleRecaptchaValidator } from '@nestlab/google-recaptcha';
 
 @Injectable()
 export class CustomersService extends AbstractService<CustomerEntity> {
@@ -130,10 +132,11 @@ export class CustomersService extends AbstractService<CustomerEntity> {
           serialNumber: Like(
             input?.serialNumber ? `%${input.serialNumber}%` : '%%',
           ),
-          createdAt: Between(startDate, endDate),
+          createdAt: Between(beginOfDate(startDate), endOfDate(endDate)),
           status: input?.status ? input.status : undefined,
           type: input?.type ? input.type : undefined,
           giftId: input.giftId !== undefined ? input.giftId : undefined,
+          provinceId: input.provinceId !== undefined ? input.provinceId : undefined,
         },
         order: {
           id: 'DESC',
@@ -142,6 +145,10 @@ export class CustomersService extends AbstractService<CustomerEntity> {
           imageRecipt: true,
           imageSn: true,
           createdByUser: true,
+          province: true,
+          district: true,
+          ward: true,
+          gift: true,
         },
       })
       .then(([entities, count]) => {
@@ -162,6 +169,9 @@ export class CustomersService extends AbstractService<CustomerEntity> {
         province: true,
         district: true,
         ward: true,
+        imageRecipt: true,
+        imageSn: true,
+        createdByUser: true,
       },
     });
   }
