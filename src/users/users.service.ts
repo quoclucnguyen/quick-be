@@ -95,6 +95,10 @@ export class UsersService extends AbstractService<User> {
     if (input.name) user.name = input.name;
     if (input.role) user.role = input.role;
     if (input.isActive !== null) user.isActive = input.isActive;
+    if (input.provinceId !== null) user.provinceId = input.provinceId;
+    if (input.districtId !== null) user.districtId = input.districtId;
+    if (input.wardId !== null) user.wardId = input.wardId;
+    if (input.address !== null) user.address = input.address;
     user.updatedBy = userLogin.id;
 
     return this.repository.save(user);
