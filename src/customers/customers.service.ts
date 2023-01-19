@@ -117,7 +117,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
     return this.repository
       .findAndCount({
         take: input.take,
-        skip: input.skip,
+        skip: (input.skip > 0 ? input.skip - 1 : 0),
         where: {
           isActive: true,
           name: Like(input?.name ? `%${input.name}%` : '%%'),
@@ -221,7 +221,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
     return true;
   }
 
-  async confirm(id: number, user: LoggedInUser) {
+  async confirm(id: number, user: LoggedInUser, reason?: string) {
     const customer = await this.repository.findOne({
       where: { id, isActive: true },
       relations: {
@@ -240,6 +240,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
           customerId: customer.id,
           action: 'done',
           createdBy: user.id,
+          reason: reason
         });
         return true;
       case 'reject':
@@ -281,7 +282,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
       case 'new':
       case 'done':
         customer.status = 'reject';
-        customer.reason = reason;
+        customer.rejectReason = reason;
         customer.updatedBy = user.id;
         await this.repository.save(customer);
         if (customer.giftId) {
@@ -294,6 +295,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
           customerId: customer.id,
           action: 'reject',
           createdBy: user.id,
+          reason: reason
         });
         return true;
       default:

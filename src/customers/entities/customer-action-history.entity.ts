@@ -10,6 +10,9 @@ export class CustomerActionHistoryEntity extends AbstractEntity {
   @Column({ name: 'action', type: 'enum', enum: ['done', 'reject', 'new'] })
   action: 'done' | 'reject' | 'new';
 
+  @Column({ name: 'reason', type: 'text', nullable: true })
+  reason: string;
+
   @ManyToOne(
     () => CustomerEntity,
     (customer) => customer.customerActionHistories,
