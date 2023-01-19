@@ -244,6 +244,9 @@ export class CustomersService extends AbstractService<CustomerEntity> {
         });
         return true;
       case 'reject':
+        if (reason == null) {
+          throw new BadRequestException('Lý do không được để trống')
+        }
         customer.status = 'done';
         customer.updatedBy = user.id;
         await this.repository.save(customer);
@@ -258,6 +261,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
           customerId: customer.id,
           action: 'done',
           createdBy: user.id,
+          reason: reason
         });
         return true;
       default:

@@ -44,6 +44,7 @@ import {
   GoogleRecaptchaValidator,
 } from '@nestlab/google-recaptcha';
 import { ConfigService } from '@nestjs/config';
+import { RejectConfirmDto } from './dto/reject-confirm.dto';
 
 @ApiTags('Customers')
 @Controller('customers')
@@ -54,7 +55,7 @@ export class CustomersController {
     private readonly usersService: UsersService,
     private readonly recaptchaValidator: GoogleRecaptchaValidator,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   async create(
     @Body() createCustomerDto: CreateCustomerDto,
@@ -154,6 +155,7 @@ export class CustomersController {
     createCustomerDto.fileSN = fileSN[0];
     createCustomerDto.fileRecipt = fileReceipt[0];
     createCustomerDto.type = 'customer';
+    createCustomerDto.status = 'new';
     return this.customersService.create(createCustomerDto, user);
   }
 
@@ -216,10 +218,10 @@ export class CustomersController {
     return this.customersService.edit(id, input, user);
   }
 
-  @Get('/confirm/:id')
+  @Post('/confirm/:id')
   @Roles(...[UserRole.ADMIN, UserRole.HOTLINE, UserRole.SA])
-  confirm(@CurrentUser() user: LoggedInUser, @Param('id') id: number) {
-    return this.customersService.confirm(id, user);
+  confirm(@CurrentUser() user: LoggedInUser, @Param('id') id: number, @Body() input: RejectConfirmDto,) {
+    return this.customersService.confirm(id, user, input?.reason);
   }
 
   @Post('/reject/:id')
@@ -288,6 +290,7 @@ export class CustomersController {
     createCustomerDto.fileSN = fileSN[0];
     createCustomerDto.fileRecipt = fileReceipt[0];
     createCustomerDto.type = 'user';
+    createCustomerDto.status = 'done';
     const userEntity = await this.usersService.findOne({
       where: { id: user.id },
     });

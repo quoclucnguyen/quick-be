@@ -71,4 +71,6 @@ export class CreateCustomerDto {
   @IsString()
   @Transform((value: any) => value.trim(), { toPlainOnly: true })
   seriesPurchase: string;
+
+  status: 'new' | 'done';
 }
