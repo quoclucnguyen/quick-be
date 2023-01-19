@@ -144,7 +144,11 @@ export class CustomersService extends AbstractService<CustomerEntity> {
         relations: {
           imageRecipt: true,
           imageSn: true,
-          createdByUser: true,
+          createdByUser: {
+            province: true,
+            district: true,
+            ward: true
+          },
           province: true,
           district: true,
           ward: true,
