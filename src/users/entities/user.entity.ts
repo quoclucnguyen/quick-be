@@ -2,6 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -11,6 +13,9 @@ import { Exclude } from 'class-transformer';
 import { UserGiftEntity } from 'src/gifts/entities/user-gift.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { CustomerEntity } from 'src/customers/entities/customer.entity';
+import { Province } from 'src/locations/entities/province.entity';
+import { District } from 'src/locations/entities/district.entity';
+import { Ward } from 'src/locations/entities/ward.entity';
 
 export enum UserRole {
   SA = 'SA',
@@ -153,6 +158,18 @@ export class User {
   @ApiProperty()
   @OneToMany(() => CustomerEntity, (customer) => customer.createdByUser)
   customers: CustomerEntity[];
+
+  @ManyToOne(() => Province, province => province.users)
+  @JoinColumn({ name: 'province_id' })
+  province: Province;
+
+  @ManyToOne(() => District, district => district.users)
+  @JoinColumn({ name: 'district_id' })
+  district: District;
+
+  @ManyToOne(() => Ward, ward => ward.users)
+  @JoinColumn({ name: 'ward_id' })
+  ward: Ward;
 }
 
 export interface LoggedInUser {

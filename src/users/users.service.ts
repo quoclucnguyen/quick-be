@@ -40,6 +40,10 @@ export class UsersService extends AbstractService<User> {
     user.username = input.username;
     user.passwordHash = await bcrypt.hash(input.password, 10);
     user.createdBy = userLogin.id;
+    user.provinceId = input.provinceId;
+    user.wardId = input.wardId;
+    user.districtId = input.districtId;
+    user.address = input.address;
     return this.repository.save(user);
   }
   findAllAndCount(filter: UserFilter) {
@@ -50,10 +54,15 @@ export class UsersService extends AbstractService<User> {
           username: filter.username ? Like(`%${filter.username}%`) : null,
         },
         take: filter.take,
-        skip: filter.skip,
+        skip: filter.skip > 0 ? filter.skip - 1 : 0,
         order: {
           id: 'DESC',
         },
+        relations: {
+          province: true,
+          district: true,
+          ward: true
+        }
       })
       .then(([entities, count]) => {
         return { entities, count };

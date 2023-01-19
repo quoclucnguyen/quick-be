@@ -1,5 +1,6 @@
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { CustomerEntity } from 'src/customers/entities/customer.entity';
+import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { District } from './district.entity';
 
@@ -32,4 +33,7 @@ export class Province extends AbstractEntity {
 
   @OneToMany(() => CustomerEntity, (customer) => customer.province)
   customers: CustomerEntity[];
+
+  @OneToMany(() => User, user => user.province)
+  users: User[];
 }

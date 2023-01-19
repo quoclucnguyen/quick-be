@@ -18,4 +18,16 @@ export class CreateUserDto {
   @IsNotEmpty()
   @ApiProperty()
   role: UserRole;
+
+  @ApiProperty()
+  provinceId: number;
+
+  @ApiProperty()
+  wardId: number;
+
+  @ApiProperty()
+  districtId: number;
+
+  @ApiProperty()
+  address: string;
 }

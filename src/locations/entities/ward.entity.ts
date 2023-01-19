@@ -1,5 +1,6 @@
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { CustomerEntity } from 'src/customers/entities/customer.entity';
+import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { District } from './district.entity';
 
@@ -33,4 +34,7 @@ export class Ward extends AbstractEntity {
 
   @OneToMany(() => CustomerEntity, (customer) => customer.ward)
   customers: CustomerEntity[];
+
+  @OneToMany(() => User, user => user.ward)
+  users: User[];
 }
