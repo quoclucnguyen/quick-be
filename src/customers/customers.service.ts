@@ -33,6 +33,13 @@ export class CustomersService extends AbstractService<CustomerEntity> {
 
   async create(createCustomerDto: CreateCustomerDto, user?: LoggedInUser) {
     /**
+     * Kiểm tra mã CMND/CCCD 9 hoặc 12 số
+     */
+    if (![9, 12].includes(createCustomerDto.idCardNumber.length)) {
+      throw new BadRequestException('CMND hoặc CCCD phải gồm 9 hoặc 12 số')
+    }
+
+    /**
      * Kiểm tra serialNumber
      */
 
@@ -187,6 +194,13 @@ export class CustomersService extends AbstractService<CustomerEntity> {
     const customer = await this.repository.findOne({ where: { id } });
     if (customer === null) {
       throw new BadRequestException('Không tìm thấy khách hàng theo ID đã gửi');
+    }
+
+    /**
+     * Kiểm tra mã CMND/CCCD 9 hoặc 12 số
+     */
+    if (![9, 12].includes(input.idCardNumber.length)) {
+      throw new BadRequestException('CMND hoặc CCCD phải gồm 9 hoặc 12 số')
     }
 
     // Kiểm tra mã SN có trùng với người khác hay không

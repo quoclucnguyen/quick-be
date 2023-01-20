@@ -1,21 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { CreateCustomerDto } from './create-customer.dto';
 
 export class CreateCustomerCustomerDto extends CreateCustomerDto {
   @ApiProperty()
   @IsNotEmpty()
+  @IsNumber()
   @Type(() => Number)
   provinceId: number;
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsNumber()
   @Type(() => Number)
   districtId: number;
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsNumber()
   @Type(() => Number)
   wardId: number;
 

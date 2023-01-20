@@ -59,6 +59,7 @@ export class CreateCustomerDto {
   @IsNumberString()
   @Transform((value: any) => value.trim(), { toPlainOnly: true })
   @MinLength(9)
+  @MaxLength(12)
   idCardNumber: string;
 
   @ApiProperty({ description: 'Ngày mua format `YYYY-MM-DD`' })
