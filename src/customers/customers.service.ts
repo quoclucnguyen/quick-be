@@ -137,7 +137,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
     return this.repository
       .findAndCount({
         take: input.take,
-        skip: (input.skip > 0 ? input.skip - 1 : 0),
+        skip: (input.skip > 0 ? input.skip * input.take : 0),
         where: {
           isActive: true,
           name: Like(input?.name ? `%${input.name}%` : '%%'),

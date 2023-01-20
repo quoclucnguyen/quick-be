@@ -54,7 +54,7 @@ export class UsersService extends AbstractService<User> {
           username: filter.username ? Like(`%${filter.username}%`) : null,
         },
         take: filter.take,
-        skip: filter.skip > 0 ? filter.skip - 1 : 0,
+        skip: filter.skip > 0 ? filter.skip * filter.take : 0,
         order: {
           id: 'DESC',
         },
