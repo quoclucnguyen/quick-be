@@ -278,6 +278,21 @@ export class CustomersService extends AbstractService<CustomerEntity> {
         if (reason == null) {
           throw new BadRequestException('Lý do không được để trống')
         }
+        /**
+         * Check mã S/N có trùng với đơn new nào hay không?
+         */
+        const customerSNCheck = await this.repository.findOne({
+          where: {
+            serialNumber: customer.serialNumber,
+            isActive: true,
+            id: Not(customer.id),
+            status: Not('reject')
+          }
+        });
+        if (customerSNCheck) {
+          throw new BadRequestException('Mã S/N đã được sử dụng.')
+        }
+
         const gift = await this.giftsService.findOne({ where: { id: customer.giftId } });
         if (gift.quantity < 1) {
           throw new BadRequestException('Quà trong kho đã hết.')
