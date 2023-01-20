@@ -278,6 +278,10 @@ export class CustomersService extends AbstractService<CustomerEntity> {
         if (reason == null) {
           throw new BadRequestException('Lý do không được để trống')
         }
+        const gift = await this.giftsService.findOne({ where: { id: customer.giftId } });
+        if (gift.quantity < 1) {
+          throw new BadRequestException('Quà trong kho đã hết.')
+        }
         customer.status = 'done';
         customer.updatedBy = user.id;
         await this.repository.save(customer);
