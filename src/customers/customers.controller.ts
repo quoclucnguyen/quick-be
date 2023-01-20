@@ -160,7 +160,7 @@ export class CustomersController {
   }
 
   @Get()
-  @Roles(...[UserRole.ADMIN, UserRole.HOTLINE, UserRole.SA])
+  @Roles(...[UserRole.ADMIN, UserRole.HOTLINE, UserRole.SA, UserRole.CLIENT])
   findAll(@Query() input: CustomerFilter, @CurrentUser() user: LoggedInUser) {
 
     return this.customersService.findAllWithFilter(input);
