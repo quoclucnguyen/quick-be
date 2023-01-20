@@ -160,18 +160,9 @@ export class CustomersController {
   }
 
   @Get()
+  @Roles(...[UserRole.ADMIN, UserRole.HOTLINE, UserRole.SA])
   findAll(@Query() input: CustomerFilter, @CurrentUser() user: LoggedInUser) {
-    switch (user.role) {
-      case UserRole.SA:
-      case UserRole.ADMIN:
-        break;
-      case UserRole.HOTLINE:
-        input.type = 'customer';
-        break;
-      case UserRole.USER:
-      default:
-        throw new ForbiddenException();
-    }
+
     return this.customersService.findAllWithFilter(input);
   }
 
