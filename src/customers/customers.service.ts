@@ -14,6 +14,7 @@ import { CustomerActionHistoryEntity } from './entities/customer-action-history.
 import { GiftEntity } from 'src/gifts/entities/gift.entity';
 import { endOfDate, beginOfDate } from 'src/common/helper.common';
 import { GoogleRecaptchaValidator } from '@nestlab/google-recaptcha';
+import { RuntimeException } from '@nestjs/core/errors/exceptions/runtime.exception';
 
 @Injectable()
 export class CustomersService extends AbstractService<CustomerEntity> {
@@ -80,36 +81,48 @@ export class CustomersService extends AbstractService<CustomerEntity> {
     const gifts = await this.giftsService.findAll({
       where: { isActive: true, quantity: MoreThan(0), id: MoreThan(0) },
     });
-    if (gifts.length === 0) {
-      customer.giftId = 0;
-    } else {
-      const gift = gifts[Math.floor(Math.random() * gifts.length)];
-      customer.giftId = gift.id;
-      customer.gift = gift;
-      /**
-       * Trừ đi quà đã ra tại đây.
-       */
-      await this.giftsService.update(
-        { where: { id: gift.id } },
-        { quantity: gift.quantity - 1 },
-      );
-    }
-    /**
-     * Thêm vào history
-     */
-    const history = this.customerHistoryRepository.create(customer);
-    history.createdBy = user?.id;
-    customer.customerHistories = [history];
-    const actionHistory = this.customerActionHistoryRepository.create();
-    actionHistory.action = 'new';
-    actionHistory.createdBy = user?.id;
-    customer.customerActionHistories = [actionHistory];
+    const queryRunner = this.dataSource.createQueryRunner();
 
-    await this.repository.save(customer);
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+
+      if (gifts.length === 0) {
+        customer.giftId = 0;
+      } else {
+        const gift = gifts[Math.floor(Math.random() * gifts.length)];
+        customer.giftId = gift.id;
+        customer.gift = gift;
+        /**
+         * Trừ đi quà đã ra tại đây.
+         */
+        await queryRunner.manager.update(GiftEntity, { id: gift.id }, { quantity: gift.quantity - 1 });
+      }
+      /**
+       * Thêm vào history
+       */
+      const history = this.customerHistoryRepository.create(customer);
+      history.createdBy = user?.id;
+      customer.customerHistories = [history];
+      const actionHistory = this.customerActionHistoryRepository.create();
+      actionHistory.action = 'new';
+      actionHistory.createdBy = user?.id;
+      customer.customerActionHistories = [actionHistory];
+      await queryRunner.manager.save(customer);
+
+      await queryRunner.commitTransaction();
+
+    } catch (err) {
+      // since we have errors lets rollback the changes we made
+      await queryRunner.rollbackTransaction();
+      throw new RuntimeException(err);
+    } finally {
+      // you need to release a queryRunner which was manually instantiated
+      await queryRunner.release();
+    }
     const resultGift = await this.giftsService.findOne({
       where: { id: customer.giftId },
     });
-
     return {
       name: resultGift.name,
       code: resultGift.code,
