@@ -40,10 +40,7 @@ export class UsersService extends AbstractService<User> {
     user.username = input.username;
     user.passwordHash = await bcrypt.hash(input.password, 10);
     user.createdBy = userLogin.id;
-    user.provinceId = input.provinceId;
-    user.wardId = input.wardId;
-    user.districtId = input.districtId;
-    user.address = input.address;
+
     return this.repository.save(user);
   }
   findAllAndCount(filter: UserFilter) {
@@ -59,9 +56,6 @@ export class UsersService extends AbstractService<User> {
           id: 'DESC',
         },
         relations: {
-          province: true,
-          district: true,
-          ward: true
         }
       })
       .then(([entities, count]) => {
@@ -95,10 +89,6 @@ export class UsersService extends AbstractService<User> {
     if (input.name) user.name = input.name;
     if (input.role) user.role = input.role;
     if (input.isActive !== null) user.isActive = input.isActive;
-    if (input.provinceId !== null) user.provinceId = input.provinceId;
-    if (input.districtId !== null) user.districtId = input.districtId;
-    if (input.wardId !== null) user.wardId = input.wardId;
-    if (input.address !== null) user.address = input.address;
     user.updatedBy = userLogin.id;
 
     return this.repository.save(user);

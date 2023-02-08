@@ -16,9 +16,8 @@ async function bootstrap() {
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.enableCors();
   const config = new DocumentBuilder()
-    .setTitle('FIELD CHECK API')
-    .setDescription('FIELD CHECK API description')
-    .setVersion('1.0')
+    .setTitle('NAN API')
+    .setVersion('0.0.1')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);

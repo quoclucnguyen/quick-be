@@ -8,21 +8,14 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { AbstractEntity } from '../../common/abstract.entity';
 import { Exclude } from 'class-transformer';
-import { UserGiftEntity } from 'src/gifts/entities/user-gift.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { CustomerEntity } from 'src/customers/entities/customer.entity';
-import { Province } from 'src/locations/entities/province.entity';
-import { District } from 'src/locations/entities/district.entity';
-import { Ward } from 'src/locations/entities/ward.entity';
 
 export enum UserRole {
   SA = 'SA',
   USER = 'USER',
-  ADMIN = 'ADMIN',
-  HOTLINE = 'HOTLINE',
-  CLIENT = 'CLIENT'
+  ADMIN = 'ADMIN'
 }
 
 @Entity('users')
@@ -128,9 +121,6 @@ export class User {
   })
   firebaseToken: string;
 
-  @OneToMany(() => UserGiftEntity, (userGift) => userGift.user)
-  userGifts: UserGiftEntity[];
-
   @Exclude()
   @Column({
     name: 'token',
@@ -141,36 +131,8 @@ export class User {
   token: string;
 
   @ApiProperty()
-  @Column({ name: 'province_id', nullable: true })
-  provinceId: number;
-
-  @ApiProperty()
-  @Column({ name: 'district_id', nullable: true })
-  districtId: number;
-
-  @ApiProperty()
-  @Column({ name: 'ward_id', nullable: true })
-  wardId: number;
-
-  @ApiProperty()
-  @Column({ name: 'address', nullable: true })
-  address: string;
-
-  @ApiProperty()
   @OneToMany(() => CustomerEntity, (customer) => customer.createdByUser)
   customers: CustomerEntity[];
-
-  @ManyToOne(() => Province, province => province.users)
-  @JoinColumn({ name: 'province_id' })
-  province: Province;
-
-  @ManyToOne(() => District, district => district.users)
-  @JoinColumn({ name: 'district_id' })
-  district: District;
-
-  @ManyToOne(() => Ward, ward => ward.users)
-  @JoinColumn({ name: 'ward_id' })
-  ward: Ward;
 }
 
 export interface LoggedInUser {

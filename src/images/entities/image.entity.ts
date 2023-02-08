@@ -1,5 +1,6 @@
 import { Transform } from 'class-transformer';
 import { AbstractEntity } from 'src/common/abstract.entity';
+import { CustomerImageEntity } from 'src/customers/entities/customer-image.entity';
 import { CustomerEntity } from 'src/customers/entities/customer.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 
@@ -24,32 +25,9 @@ export class ImageEntity extends AbstractEntity {
   })
   path: string;
 
-  @Column({
-    name: 'size',
-    type: 'bigint',
-    nullable: true,
-  })
-  size: number;
+  @OneToMany(() => CustomerImageEntity, customerImage => customerImage.image)
+  customerImages: CustomerImageEntity[];
 
-  @Column({
-    name: 'width',
-    type: 'int',
-    nullable: true,
-  })
-  width: number;
-
-  @Column({
-    name: 'height',
-    type: 'int',
-    nullable: true,
-  })
-  height: number;
-
-  @OneToMany(() => CustomerEntity, (customer) => customer.imageSn)
-  customerImageSn: CustomerEntity;
-
-  @OneToMany(() => CustomerEntity, (customer) => customer.imageRecipt)
-  customerImageRecipt: CustomerEntity;
 }
 
 export enum ImageType {
