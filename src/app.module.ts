@@ -22,6 +22,7 @@ import 'winston-daily-rotate-file';
 import { LoggerMiddleware } from './common/logger.middleware';
 import { ImagesModule } from './images/images.module';
 import { CustomersModule } from './customers/customers.module';
+import { OutletsModule } from './outlets/outlets.module';
 
 const configSchema = Joi.object({
   APP_PORT: Joi.number().default(3000),
@@ -103,6 +104,7 @@ const configSchema = Joi.object({
     AuthModule,
     ImagesModule,
     CustomersModule,
+    OutletsModule,
   ],
   controllers: [AppController],
   providers: [

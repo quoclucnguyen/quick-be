@@ -1,5 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  UploadedFiles,
+} from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { CurrentUser } from 'src/auth/curent-user.decorator';
+import { LoggedInUser } from 'src/users/entities/user.entity';
 import { CustomersService } from './customers.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -8,11 +27,22 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 @ApiTags('Customers')
 @Controller('customers')
 export class CustomersController {
-  constructor(private readonly customersService: CustomersService) { }
+  constructor(private readonly customersService: CustomersService) {}
 
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 3 }]))
+  @ApiOperation({ summary: 'Thông tin nhập liệu' })
+  @ApiConsumes('multipart/form-data')
   @Post()
-  create(@Body() createCustomerDto: CreateCustomerDto) {
-    return this.customersService.create(createCustomerDto);
+  create(
+    @Body() createCustomerDto: CreateCustomerDto,
+    @UploadedFiles()
+    files: {
+      files: Express.Multer.File[];
+    },
+    @CurrentUser() user: LoggedInUser,
+  ) {
+    createCustomerDto.files = files.files;
+    return this.customersService.create(createCustomerDto, user);
   }
 
   @Get()
@@ -21,14 +51,13 @@ export class CustomersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-
-  }
+  findOne(@Param('id') id: string) {}
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
-
-  }
+  update(
+    @Param('id') id: string,
+    @Body() updateCustomerDto: UpdateCustomerDto,
+  ) {}
 
   @Delete(':id')
   remove(@Param('id') id: string) {

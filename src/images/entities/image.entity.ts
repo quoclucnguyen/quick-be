@@ -2,7 +2,14 @@ import { Transform } from 'class-transformer';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { CustomerImageEntity } from 'src/customers/entities/customer-image.entity';
 import { CustomerEntity } from 'src/customers/entities/customer.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
 @Entity('images')
 export class ImageEntity extends AbstractEntity {
@@ -25,9 +32,8 @@ export class ImageEntity extends AbstractEntity {
   })
   path: string;
 
-  @OneToMany(() => CustomerImageEntity, customerImage => customerImage.image)
+  @OneToMany(() => CustomerImageEntity, (customerImage) => customerImage.image)
   customerImages: CustomerImageEntity[];
-
 }
 
 export enum ImageType {
@@ -37,3 +43,4 @@ export enum ImageType {
 }
 
 export const IMAGE_EXT_ALLOWED = ['image/jpeg', 'image/png', 'image/jpg'];
+export const IMAGE_MAX_SIZE = 1000;
