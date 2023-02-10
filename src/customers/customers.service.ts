@@ -26,14 +26,15 @@ export class CustomersService extends AbstractService<CustomerEntity> {
     /**
      * Kiểm tra file ext, kích thước
      */
-    if (createCustomerDto.files.length === 0) {
+    if (!createCustomerDto.files || createCustomerDto?.files?.length === 0) {
       throw new BadRequestException('Files không được để trống.');
     }
-    for (let i = 0; i < createCustomerDto.files.length; i++) {
+
+    for (let i = 0; i < createCustomerDto.files?.length; i++) {
       if (!IMAGE_EXT_ALLOWED.includes(createCustomerDto.files[i].mimetype)) {
         throw new BadRequestException('File hình ảnh không hợp lệ');
       }
-      console.log('SIZE: ', createCustomerDto.files[i].size)
+      console.log('SIZE: ', createCustomerDto.files[i].size);
       if (createCustomerDto.files[i].size > IMAGE_MAX_SIZE) {
         throw new BadRequestException('File dung lượng cao hơn cho phép');
       }

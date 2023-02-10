@@ -18,6 +18,7 @@ export class LoggerMiddleware implements NestMiddleware {
       query: req.query,
       path: req.path,
     });
+    console.log("body: ",req)
     next();
   }
 }

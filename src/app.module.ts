@@ -97,7 +97,7 @@ const configSchema = Joi.object({
           datePattern: 'YYYY_MM_DD',
           zippedArchive: true,
         }),
-        new winston.transports.Console(),
+        // new winston.transports.Console(),
       ],
     }),
     UsersModule,

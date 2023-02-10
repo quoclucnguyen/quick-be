@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class OutletFilter {
-  @ApiProperty()
+  @ApiProperty({ type: 'number' })
   take = 10;
 
-  @ApiProperty()
+  @ApiProperty({ type: 'number' })
   skip = 0;
 
   @ApiProperty({ required: false })
@@ -15,11 +15,10 @@ export class OutletFilter {
 
   @ApiProperty({ required: false })
   address?: string;
-  
+
   @ApiProperty({ required: false })
   provinceId?: number;
 
   @ApiProperty({ required: false })
   districtId?: number;
-  
 }
