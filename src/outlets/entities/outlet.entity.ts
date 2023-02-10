@@ -11,7 +11,7 @@ export class OutletEntity extends AbstractEntity {
   @Column()
   code: string;
 
-  @Column({ name: 'provine_id' })
+  @Column({ name: 'province_id' })
   provinceId: number;
 
   @Column({ name: 'district_id' })

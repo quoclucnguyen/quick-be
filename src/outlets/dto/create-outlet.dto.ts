@@ -12,7 +12,7 @@ export class CreateOutletDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  provindeId: number;
+  provinceId: number;
 
   @ApiProperty()
   @IsNotEmpty()

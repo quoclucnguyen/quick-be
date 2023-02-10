@@ -33,6 +33,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
       if (!IMAGE_EXT_ALLOWED.includes(createCustomerDto.files[i].mimetype)) {
         throw new BadRequestException('File hình ảnh không hợp lệ');
       }
+      console.log('SIZE: ', createCustomerDto.files[i].size)
       if (createCustomerDto.files[i].size > IMAGE_MAX_SIZE) {
         throw new BadRequestException('File dung lượng cao hơn cho phép');
       }

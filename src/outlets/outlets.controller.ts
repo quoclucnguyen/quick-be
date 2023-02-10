@@ -14,7 +14,10 @@ import { UpdateOutletDto } from './dto/update-outlet.dto';
 import { OutletFilter } from './dto/outlet.filter.dto';
 import { CurrentUser } from 'src/auth/curent-user.decorator';
 import { LoggedInUser } from 'src/users/entities/user.entity';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('Outlets')
 @Controller('outlets')
 export class OutletsController {
   constructor(private readonly outletsService: OutletsService) {}

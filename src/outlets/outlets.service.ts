@@ -41,11 +41,11 @@ export class OutletsService extends AbstractService<OutletEntity> {
       }
     }
     const province = await this.provinceLocationService.findOne({
-      where: { id: input.provindeId },
+      where: { id: input.provinceId },
     });
     if (province === null) {
       throw new BadRequestException(
-        `Không tìm thấy ID tỉnh: ${input.provindeId}`,
+        `Không tìm thấy ID tỉnh: ${input.provinceId}`,
       );
     }
     const district = await this.districtLocationService.findOne({
@@ -129,7 +129,7 @@ export class OutletsService extends AbstractService<OutletEntity> {
     if (input.address) outlet.address = input.address;
     if (input.code) outlet.code = input.code;
     if (input.name) outlet.name = input.name;
-    if (input.provindeId) outlet.provinceId = input.provindeId;
+    if (input.provinceId) outlet.provinceId = input.provinceId;
     if (input.districtId) outlet.districtId = input.districtId;
     outlet.updatedBy = userLogin.id;
     return this.repository.save(outlet);
@@ -153,7 +153,7 @@ export class OutletsService extends AbstractService<OutletEntity> {
       if (outletCheckCode) {
         listOutletCodeError.push(outletCheckCode.code);
       }
-      listProvinceId.push(input[i].provindeId);
+      listProvinceId.push(input[i].provinceId);
       listDistrictId.push(input[i].districtId);
     }
     if (listOutletCodeError.length > 0) {
@@ -186,8 +186,8 @@ export class OutletsService extends AbstractService<OutletEntity> {
     const listProvinceIdNotFound = [];
     const listDistrictIdNotFound = [];
     for (let i = 0; i < input.length; i++) {
-      if (!provinceIds.includes(input[i].provindeId)) {
-        listProvinceIdNotFound.push(input[i].provindeId);
+      if (!provinceIds.includes(input[i].provinceId)) {
+        listProvinceIdNotFound.push(input[i].provinceId);
       }
       if (!districtIds.includes(input[i].districtId)) {
         listDistrictIdNotFound.push(input[i].districtId);

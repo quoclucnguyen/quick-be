@@ -27,7 +27,7 @@ export class CreateCustomerDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
+  @IsNumberString()
   outletId: number;
 
   @ApiProperty()

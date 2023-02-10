@@ -43,4 +43,4 @@ export enum ImageType {
 }
 
 export const IMAGE_EXT_ALLOWED = ['image/jpeg', 'image/png', 'image/jpg'];
-export const IMAGE_MAX_SIZE = 1000;
+export const IMAGE_MAX_SIZE = 1000 * 1024;
