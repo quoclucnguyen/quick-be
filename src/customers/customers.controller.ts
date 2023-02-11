@@ -68,4 +68,10 @@ export class CustomersController {
   checkPhone(@Body() input: { phone: string }) {
     return this.customersService.checkPhone(input.phone);
   }
+
+  @Post('check-otp')
+  checkOtp(@Body() input: { otp: string }) {
+    return this.customersService.checkOtp(input.otp);
+  }
+  
 }

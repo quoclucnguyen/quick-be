@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsAlphanumeric,
   IsNotEmpty,
@@ -32,7 +32,7 @@ export class CreateCustomerDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @Type(() => Number)
   @MinLength(4)
   @MaxLength(4)
   @Transform((value: any) => value.trim(), { toPlainOnly: true })

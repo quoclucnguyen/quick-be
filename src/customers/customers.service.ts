@@ -24,6 +24,41 @@ export class CustomersService extends AbstractService<CustomerEntity> {
   }
   async create(createCustomerDto: CreateCustomerDto, user: LoggedInUser) {
     /**
+     * Kiểm tra số điện thoại
+     */
+    const customerPhoneCheck = await this.repository.findOne({
+      select: {
+        id: true,
+      },
+      where: {
+        phone: createCustomerDto.phone,
+        isActive: true,
+      },
+    });
+    if (customerPhoneCheck) {
+      throw new BadRequestException(
+        `Số điện thoại: ${createCustomerDto.phone} đã nhận được sampling.`,
+      );
+    }
+
+     /**
+     * Kiểm tra OTP
+     */
+     const customerOTPCheck = await this.repository.findOne({
+      select: {
+        id: true,
+      },
+      where: {
+        otp: createCustomerDto.otp,
+        isActive: true,
+      },
+    });
+    if (customerOTPCheck) {
+      throw new BadRequestException(
+        `OTP: ${createCustomerDto.otp} đã có trong hệ thống.`,
+      );
+    }
+    /**
      * Kiểm tra file ext, kích thước
      */
     if (!createCustomerDto.files || createCustomerDto?.files?.length === 0) {
@@ -32,7 +67,9 @@ export class CustomersService extends AbstractService<CustomerEntity> {
 
     for (let i = 0; i < createCustomerDto.files?.length; i++) {
       if (!IMAGE_EXT_ALLOWED.includes(createCustomerDto.files[i].mimetype)) {
-        throw new BadRequestException('File hình ảnh không hợp lệ');
+        throw new BadRequestException(
+          `File hình ảnh có định dạng "${createCustomerDto.files[i].mimetype}" không hợp lệ`,
+        );
       }
       console.log('SIZE: ', createCustomerDto.files[i].size);
       if (createCustomerDto.files[i].size > IMAGE_MAX_SIZE) {
@@ -81,6 +118,28 @@ export class CustomersService extends AbstractService<CustomerEntity> {
       return {
         success: false,
         message: 'Số điện thoại đã được nhận sampling.',
+      };
+    }
+    return {
+      success: true,
+      message: null,
+    };
+  }
+
+  async checkOtp(otp: string) {
+    const customer = await this.repository.findOne({
+      select: {
+        id: true,
+      },
+      where: {
+        otp: otp,
+        isActive: true,
+      },
+    });
+    if (customer) {
+      return {
+        success: false,
+        message: 'OTP đã có trong hệ thống',
       };
     }
     return {
