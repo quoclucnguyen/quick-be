@@ -36,7 +36,7 @@ export class OutletsService extends AbstractService<OutletEntity> {
       });
       if (outletWithCode) {
         throw new BadRequestException(
-          `Outlet code ${input.code}} đã có, vui lòng kiểm tra lại.`,
+          `Outlet code "${input.code}" đã có, vui lòng kiểm tra lại.`,
         );
       }
     }
@@ -93,7 +93,7 @@ export class OutletsService extends AbstractService<OutletEntity> {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} outlet`;
+    return this.repository.update({ id }, { isActive: false });
   }
 
   async updateOutlet(
