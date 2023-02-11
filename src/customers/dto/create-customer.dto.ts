@@ -7,7 +7,10 @@ import {
   IsNumberString,
   IsPhoneNumber,
   IsString,
+  Length,
+  Max,
   MaxLength,
+  Min,
   MinLength,
 } from 'class-validator';
 
@@ -32,9 +35,9 @@ export class CreateCustomerDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @Type(() => Number)
-  @MinLength(4)
-  @MaxLength(4)
+  @IsString()
+  @Length(4,4)
+  @IsNumberString()
   @Transform((value: any) => value.trim(), { toPlainOnly: true })
   otp: string;
 

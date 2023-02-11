@@ -41,10 +41,10 @@ export class CustomersService extends AbstractService<CustomerEntity> {
       );
     }
 
-     /**
+    /**
      * Kiểm tra OTP
      */
-     const customerOTPCheck = await this.repository.findOne({
+    const customerOTPCheck = await this.repository.findOne({
       select: {
         id: true,
       },
@@ -115,10 +115,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
       },
     });
     if (customer) {
-      return {
-        success: false,
-        message: 'Số điện thoại đã được nhận sampling.',
-      };
+      throw new BadRequestException('Số điện thoại đã được nhận sampling.');
     }
     return {
       success: true,
@@ -137,10 +134,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
       },
     });
     if (customer) {
-      return {
-        success: false,
-        message: 'OTP đã có trong hệ thống',
-      };
+      throw new BadRequestException('OTP đã có trong hệ thống.');
     }
     return {
       success: true,
