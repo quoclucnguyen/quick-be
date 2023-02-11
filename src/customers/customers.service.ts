@@ -7,8 +7,9 @@ import {
 } from 'src/images/entities/image.entity';
 import { ImagesService } from 'src/images/images.service';
 import { LoggedInUser } from 'src/users/entities/user.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { CreateCustomerDto } from './dto/create-customer.dto';
+import { FilterCustomerDto } from './dto/filter-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CustomerImageEntity } from './entities/customer-image.entity';
 import { CustomerEntity } from './entities/customer.entity';
@@ -85,7 +86,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
         await createCustomerDto.files[0].buffer,
         createCustomerDto.files[0].originalname,
         user,
-        '_IMAGE',
+        'IMAGE',
       );
       listImagesId.push(imageId);
     }
@@ -97,6 +98,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
       return customerImage;
     });
     customer.createdBy = user.id;
+    customer.createdAtTimestamp = (new Date()).getTime() / 1000;
     return this.repository.save(customer);
   }
 
@@ -140,5 +142,46 @@ export class CustomersService extends AbstractService<CustomerEntity> {
       success: true,
       message: null,
     };
+  }
+
+  async findAllWithFilter(filter: FilterCustomerDto) {
+    return this.repository
+      .findAndCount({
+        take: filter.take,
+        skip: filter.skip,
+        where: {
+          isActive: true,
+          name: Like(filter?.name ? `%${filter.name}%` : '%%'),
+          phone: Like(filter?.phone ? `%${filter.phone}%` : '%%'),
+          otp: Like(filter?.otp ? `%${filter.otp}%` : '%%'),
+          outletId:
+            filter?.outletId !== undefined ? filter.outletId : undefined,
+          outlet: {
+            provinceId: filter?.provinceId !== undefined ? filter.provinceId : undefined,
+            code: Like(filter?.code ? `%${filter.code}%` : '%%'),
+          },
+          createdBy: filter?.createdBy !== undefined ? filter.createdBy : undefined
+        },
+        order: {
+          id: 'DESC',
+        },
+        relations: {
+          outlet: {
+            province: true,
+            district: true,
+          },
+          customerImages: {
+            image: true
+          },
+          createdByUser: true
+        },
+      })
+      .then(([entities, count]) => {
+        return {
+          entities,
+          count,
+        };
+      });
+
   }
 }

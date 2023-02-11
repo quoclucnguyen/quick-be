@@ -1,7 +1,8 @@
 import { AbstractEntity } from 'src/common/abstract.entity';
+import { CustomerEntity } from 'src/customers/entities/customer.entity';
 import { District } from 'src/locations/entities/district.entity';
 import { Province } from 'src/locations/entities/province.entity';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity('outlets')
 export class OutletEntity extends AbstractEntity {
@@ -27,4 +28,7 @@ export class OutletEntity extends AbstractEntity {
   @ManyToOne(() => District, (district) => district.outlets)
   @JoinColumn({ name: 'district_id' })
   district: District;
+
+  @OneToMany(()=> CustomerEntity, (customer)=> customer.outlet)
+  customers: CustomerEntity[];
 }

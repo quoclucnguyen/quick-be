@@ -4,26 +4,26 @@ import { Transform } from 'class-transformer';
 export class AbstractFilter {
   @Transform(({ obj, key }) => obj[key] === 'true')
   @ApiProperty({ required: false })
-  isActive: boolean | null;
+  isActive?: boolean | null;
 
   @Transform(({ obj, key }) => obj[key] === 'true')
   @ApiProperty({ required: false })
-  isWebQuery: boolean | null;
+  isWebQuery?: boolean | null;
 
   @ApiProperty({ required: false })
-  createdBy: number | null;
+  createdBy?: number | null;
 
   @ApiProperty({ required: false })
-  updatedBy: number | null;
+  updatedBy?: number | null;
 
   @ApiProperty({ required: false, default: 0 })
-  take: number | null = 0;
+  take?: number | null = 0;
 
   @ApiProperty({ required: false, default: 0 })
-  skip: number | null = 0;
+  skip?: number | null = 0;
 
   @ApiProperty({ required: false })
-  id: number | null;
+  id?: number | null;
 
   whereProperties: string[] = [];
   whereWithLikeProperties: string[] = [];

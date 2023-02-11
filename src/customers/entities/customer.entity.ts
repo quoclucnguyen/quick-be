@@ -1,4 +1,5 @@
 import { AbstractEntity } from 'src/common/abstract.entity';
+import { OutletEntity } from 'src/outlets/entities/outlet.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { CustomerImageEntity } from './customer-image.entity';
@@ -21,10 +22,17 @@ export class CustomerEntity extends AbstractEntity {
   @Column({ name: 'otp' })
   otp: string;
 
+  @Column({ name: 'created_at_timestamp' })
+  createdAtTimestamp: number;
+
   @OneToMany(
     () => CustomerImageEntity,
     (customerImage) => customerImage.customer,
     { cascade: true },
   )
   customerImages: CustomerImageEntity[];
+
+  @ManyToOne(()=> OutletEntity, (outlet)=> outlet.customers)
+  @JoinColumn({name: 'outlet_id'})
+  outlet: OutletEntity;
 }
