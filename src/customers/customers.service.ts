@@ -7,7 +7,7 @@ import {
 } from 'src/images/entities/image.entity';
 import { ImagesService } from 'src/images/images.service';
 import { LoggedInUser } from 'src/users/entities/user.entity';
-import { Like, Repository } from 'typeorm';
+import { Between, Like, Repository } from 'typeorm';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { FilterCustomerDto } from './dto/filter-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -160,7 +160,8 @@ export class CustomersService extends AbstractService<CustomerEntity> {
             provinceId: filter?.provinceId !== undefined ? filter.provinceId : undefined,
             code: Like(filter?.code ? `%${filter.code}%` : '%%'),
           },
-          createdBy: filter?.createdBy !== undefined ? filter.createdBy : undefined
+          createdBy: filter?.createdBy !== undefined ? filter.createdBy : undefined,
+          createdAtTimestamp: (filter?.startDate && filter.endDate) ? Between(filter.startDate, filter.endDate) : undefined,
         },
         order: {
           id: 'DESC',

@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import dayjs from 'dayjs';
 
 export const beginOfDate = (date: Date | null = null) => {
   if (date === null) {
@@ -39,3 +40,15 @@ export const upload = async (
 export const getFileExtension = (filename: string): string => {
   return '.' + filename.split('.').pop();
 };
+
+export const startOfDay = (time: number) => {
+  const day = dayjs(time);
+  day.set('hour', 0).set('minute', 0).set('second', 0);
+  return day.unix;
+}
+
+export const endOfDay = (time: number) => {
+  const day = dayjs(time);
+  day.set('hour', 23).set('minute', 59).set('second', 59);
+  return day.unix;
+}
