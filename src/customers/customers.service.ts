@@ -72,7 +72,6 @@ export class CustomersService extends AbstractService<CustomerEntity> {
           `File hình ảnh có định dạng "${createCustomerDto.files[i].mimetype}" không hợp lệ`,
         );
       }
-      console.log('SIZE: ', createCustomerDto.files[i].size);
       if (createCustomerDto.files[i].size > IMAGE_MAX_SIZE) {
         throw new BadRequestException('File dung lượng cao hơn cho phép');
       }
@@ -83,8 +82,8 @@ export class CustomersService extends AbstractService<CustomerEntity> {
     const listImagesId = [];
     for (let i = 0; i < createCustomerDto.files.length; i++) {
       const imageId = await this.imagesService.uploadFile(
-        await createCustomerDto.files[0].buffer,
-        createCustomerDto.files[0].originalname,
+        await createCustomerDto.files[i].buffer,
+        createCustomerDto.files[i].originalname,
         user,
         'IMAGE',
       );
