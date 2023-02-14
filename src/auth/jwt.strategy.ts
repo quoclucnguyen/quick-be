@@ -19,6 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_SECRET'),
+      
     });
   }
 
@@ -32,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       },
     });
     if (user === null) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Tài khoản bị đăng nhập ở nơi khác hoặc hết hạn');
     }
     return {
       id: payload.sub,

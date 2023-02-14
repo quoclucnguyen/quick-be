@@ -51,12 +51,11 @@ export class UsersService extends AbstractService<User> {
           username: filter.username ? Like(`%${filter.username}%`) : null,
         },
         take: filter.take,
-        skip: filter.skip > 0 ? (filter.skip - 1) * filter.take : 0,
+        skip: filter.skip,
         order: {
           id: 'DESC',
         },
-        relations: {
-        }
+        relations: {},
       })
       .then(([entities, count]) => {
         return { entities, count };

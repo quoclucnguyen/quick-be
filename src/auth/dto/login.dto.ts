@@ -10,5 +10,8 @@ export class LoginDto {
   @ApiProperty({ required: true })
   password: string;
 
+  @ApiProperty({ required: false })
+  isAdminWeb: false;
+
   role: string | null;
 }

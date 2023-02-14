@@ -1,4 +1,9 @@
-import { ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
+import {
+  ExecutionContext,
+  Injectable,
+  SetMetadata,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -17,6 +22,15 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       return true;
     }
     return super.canActivate(context);
+  }
+  handleRequest(err: any, user: any, info: any, context: any, status: any) {
+    if (info) {
+      throw new UnauthorizedException(
+        'Tài khoản bị đăng nhập ở nơi khác hoặc token hết hạn',
+      );
+    }
+
+    return super.handleRequest(err, user, info, context, status);
   }
 }
 

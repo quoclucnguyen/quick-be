@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User, UserRole } from '../users/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
+import { In } from 'typeorm';
 
 @Injectable()
 export class AuthService {
@@ -13,10 +14,26 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne({
-      where: { username: username, isActive: true },
-    });
+  async validateUser(
+    username: string,
+    pass: string,
+    isAdminWeb?: boolean,
+  ): Promise<any> {
+    let user = null;
+    if (isAdminWeb) {
+      user = await this.usersService.findOne({
+        where: {
+          username: username,
+          isActive: true,
+          role: In([UserRole.ADMIN, UserRole.SA]),
+        },
+      });
+    } else {
+      user = await this.usersService.findOne({
+        where: { username: username, isActive: true, role: UserRole.USER },
+      });
+    }
+
     if (user && (await bcrypt.compare(pass, user.passwordHash))) {
       user.token = await bcrypt.hash(new Date().getTime().toString(), 10);
       await this.usersService.save(user);

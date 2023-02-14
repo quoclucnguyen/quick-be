@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AbstractService } from 'src/common/abstract.service';
+import { startOfDay, endOfDay } from 'src/common/helper.common';
 import {
   IMAGE_EXT_ALLOWED,
   IMAGE_MAX_SIZE,
@@ -97,7 +98,7 @@ export class CustomersService extends AbstractService<CustomerEntity> {
       return customerImage;
     });
     customer.createdBy = user.id;
-    customer.createdAtTimestamp = (new Date()).getTime() / 1000;
+    customer.createdAtTimestamp = new Date().getTime() / 1000;
     return this.repository.save(customer);
   }
 
@@ -156,11 +157,16 @@ export class CustomersService extends AbstractService<CustomerEntity> {
           outletId:
             filter?.outletId !== undefined ? filter.outletId : undefined,
           outlet: {
-            provinceId: filter?.provinceId !== undefined ? filter.provinceId : undefined,
+            provinceId:
+              filter?.provinceId !== undefined ? filter.provinceId : undefined,
             code: Like(filter?.code ? `%${filter.code}%` : '%%'),
           },
-          createdBy: filter?.createdBy !== undefined ? filter.createdBy : undefined,
-          createdAtTimestamp: (filter?.startDate && filter.endDate) ? Between(filter.startDate, filter.endDate) : undefined,
+          createdBy:
+            filter?.createdBy !== undefined ? filter.createdBy : undefined,
+          createdAtTimestamp:
+            filter?.startDate && filter.endDate
+              ? Between(startOfDay(filter.startDate), endOfDay(filter.endDate))
+              : undefined,
         },
         order: {
           id: 'DESC',
@@ -171,9 +177,9 @@ export class CustomersService extends AbstractService<CustomerEntity> {
             district: true,
           },
           customerImages: {
-            image: true
+            image: true,
           },
-          createdByUser: true
+          createdByUser: true,
         },
       })
       .then(([entities, count]) => {
@@ -182,6 +188,5 @@ export class CustomersService extends AbstractService<CustomerEntity> {
           count,
         };
       });
-
   }
 }
