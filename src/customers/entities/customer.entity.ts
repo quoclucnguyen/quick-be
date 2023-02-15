@@ -25,6 +25,9 @@ export class CustomerEntity extends AbstractEntity {
   @Column({ name: 'created_at_timestamp' })
   createdAtTimestamp: number;
 
+  @Column({ name: 'is_edit', default: false })
+  isEdit: boolean;
+
   @OneToMany(
     () => CustomerImageEntity,
     (customerImage) => customerImage.customer,
@@ -32,7 +35,7 @@ export class CustomerEntity extends AbstractEntity {
   )
   customerImages: CustomerImageEntity[];
 
-  @ManyToOne(()=> OutletEntity, (outlet)=> outlet.customers)
-  @JoinColumn({name: 'outlet_id'})
+  @ManyToOne(() => OutletEntity, (outlet) => outlet.customers)
+  @JoinColumn({ name: 'outlet_id' })
   outlet: OutletEntity;
 }

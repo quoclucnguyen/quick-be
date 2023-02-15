@@ -24,7 +24,11 @@ export class CustomersService extends AbstractService<CustomerEntity> {
   ) {
     super(CustomersService.name, repository);
   }
-  async create(createCustomerDto: CreateCustomerDto, user: LoggedInUser) {
+  async create(
+    createCustomerDto: CreateCustomerDto,
+    user: LoggedInUser,
+    time?: number,
+  ) {
     /**
      * Kiểm tra số điện thoại
      */
@@ -98,7 +102,12 @@ export class CustomersService extends AbstractService<CustomerEntity> {
       return customerImage;
     });
     customer.createdBy = user.id;
-    customer.createdAtTimestamp = new Date().getTime() / 1000;
+    if (time) {
+      customer.createdAtTimestamp = time;
+      customer.isEdit = true;
+    } else {
+      customer.createdAtTimestamp = new Date().getTime() / 1000;
+    }
     return this.repository.save(customer);
   }
 
