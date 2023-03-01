@@ -1,3 +1,4 @@
+// protected region Add additional imports here on begin
 import {
   ClassSerializerInterceptor,
   MiddlewareConsumer,
@@ -26,7 +27,13 @@ import { GiftsModule } from './gifts/gifts.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { CustomersModule } from './customers/customers.module';
 import { PricesModule } from './prices/prices.module';
+import { OutletsModule } from './outlets/outlets.module';
+// protected region Add additional imports here end
 
+import { BooksModule } from './books/books.module';
+import { AuthorsModule } from './authors/authors.module';
+
+// protected region Add other code in here on begin
 const configSchema = Joi.object({
   APP_PORT: Joi.number().default(3000),
   APP_LOG_LEVELS: Joi.array()
@@ -110,26 +117,34 @@ const configSchema = Joi.object({
     UploadsModule,
     CustomersModule,
     PricesModule,
-  ],
-  controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: ClassSerializerInterceptor,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
-  ],
+    OutletsModule,
+// protected region Add other code in here end
+
+    BooksModule,
+    AuthorsModule,
+
+// protected region Add end code in here on begin
+],
+controllers: [AppController],
+providers: [
+  AppService,
+  {
+    provide: APP_GUARD,
+    useClass: JwtAuthGuard,
+  },
+  {
+    provide: APP_INTERCEPTOR,
+    useClass: ClassSerializerInterceptor,
+  },
+  {
+    provide: APP_GUARD,
+    useClass: RolesGuard,
+  },
+],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
-  }
+configure(consumer: MiddlewareConsumer) {
+  consumer.apply(LoggerMiddleware).forRoutes('*');
 }
+}
+// protected region Add end code in here end
