@@ -24,7 +24,8 @@ import { LoggerMiddleware } from './common/logger.middleware';
 import { UploadsModule } from './uploads/uploads.module';
 // protected region Add additional imports here end
 
-
+import { BooksModule } from './books/books.module';
+import { AuthorsModule } from './authors/authors.module';
 
 // protected region Add other code in here on begin
 const configSchema = Joi.object({
@@ -107,7 +108,8 @@ const configSchema = Joi.object({
     UploadsModule,
 // protected region Add other code in here end
 
-  
+    BooksModule,
+    AuthorsModule,
 
 // protected region Add end code in here on begin
 ],

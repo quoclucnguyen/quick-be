@@ -5,12 +5,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Column,
+  Index,
 } from 'typeorm';
 
 export class AbstractEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn({ type: 'int' })
-  id: number;
+  readonly id: number;
 
   @ApiProperty()
   @CreateDateColumn({
@@ -38,6 +39,7 @@ export class AbstractEntity {
   updatedBy: number;
 
   @ApiProperty()
+  @Index()
   @Column('boolean', { name: 'is_active', default: true })
   isActive: boolean;
 }
