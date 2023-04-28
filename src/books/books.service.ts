@@ -31,15 +31,15 @@ export class BooksService extends AbstractService<BookEntity> {
     const {
       take, 
       skip,
-        name,
-        code,
-        address,
+      name,
+      code,
+      address,
     } = filter;
     const whereClause: FindOptionsWhere<BookEntity> = {
       isActive: true,
-          name: Like(filter?.name ? `%${filter.name}%` : '%%'),
-          code: Like(filter?.code ? `%${filter.code}%` : '%%'),
-          address: Like(filter?.address ? `%${filter.address}%` : '%%'),
+      name: Like(filter?.name ? `%${filter.name}%` : '%%'),
+      code: Like(filter?.code ? `%${filter.code}%` : '%%'),
+      address: Like(filter?.address ? `%${filter.address}%` : '%%'),
     };
     const orderClause: FindOptionsOrder<BookEntity> = {
       id: 'DESC',
@@ -78,7 +78,11 @@ export class BooksService extends AbstractService<BookEntity> {
    * @returns The updated book entity
    */
   async updateBook(book: BookEntity, input: UpdateBookDto, loggedInUser: LoggedInUser) : Promise<BookEntity> {
-    const { name, code, address } = input;
+    const { 
+      name,
+      code,
+      address,
+    } = input;
     if (name) {
       book.name = name;
     }

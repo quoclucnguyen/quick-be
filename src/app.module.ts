@@ -26,6 +26,7 @@ import { UploadsModule } from './uploads/uploads.module';
 
 import { BooksModule } from './books/books.module';
 import { AuthorsModule } from './authors/authors.module';
+import { CompaniesModule } from './companies/companies.module';
 
 // protected region Add other code in here on begin
 const configSchema = Joi.object({
@@ -110,6 +111,7 @@ const configSchema = Joi.object({
 
     BooksModule,
     AuthorsModule,
+    CompaniesModule,
 
 // protected region Add end code in here on begin
 ],

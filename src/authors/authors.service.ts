@@ -31,19 +31,19 @@ export class AuthorsService extends AbstractService<AuthorEntity> {
     const {
       take, 
       skip,
-        name,
-        code,
-        address,
-        ageNumber,
-        countTime,
+      name,
+      code,
+      address,
+      ageNumber,
+      countTime,
     } = filter;
     const whereClause: FindOptionsWhere<AuthorEntity> = {
       isActive: true,
-          name: Like(filter?.name ? `%${filter.name}%` : '%%'),
-          code: Like(filter?.code ? `%${filter.code}%` : '%%'),
-          address: Like(filter?.address ? `%${filter.address}%` : '%%'),
-          ageNumber: filter?.ageNumber ?? null,
-          countTime: filter?.countTime ?? null,
+      name: Like(filter?.name ? `%${filter.name}%` : '%%'),
+      code: Like(filter?.code ? `%${filter.code}%` : '%%'),
+      address: Like(filter?.address ? `%${filter.address}%` : '%%'),
+      ageNumber: filter?.ageNumber ?? null,
+      countTime: filter?.countTime ?? null,
     };
     const orderClause: FindOptionsOrder<AuthorEntity> = {
       id: 'DESC',
@@ -82,7 +82,13 @@ export class AuthorsService extends AbstractService<AuthorEntity> {
    * @returns The updated author entity
    */
   async updateAuthor(author: AuthorEntity, input: UpdateAuthorDto, loggedInUser: LoggedInUser) : Promise<AuthorEntity> {
-    const { name, code, address } = input;
+    const { 
+      name,
+      code,
+      address,
+      ageNumber,
+      countTime,
+    } = input;
     if (name) {
       author.name = name;
     }
@@ -91,6 +97,12 @@ export class AuthorsService extends AbstractService<AuthorEntity> {
     }
     if (address) {
       author.address = address;
+    }
+    if (ageNumber) {
+      author.ageNumber = ageNumber;
+    }
+    if (countTime) {
+      author.countTime = countTime;
     }
     author.updatedBy = loggedInUser.id;
     return this.repository.save(author);
