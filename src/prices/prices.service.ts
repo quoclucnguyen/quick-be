@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AbstractService } from 'src/common/abstract.service';
 import { DataSource, Repository } from 'typeorm';
 import { PriceEntity } from './entities/price.entity';
-import { faker } from '@faker-js/faker';
 
 @Injectable()
 export class PricesService extends AbstractService<PriceEntity> {
@@ -16,9 +15,6 @@ export class PricesService extends AbstractService<PriceEntity> {
   }
   async generateAndInsertPriceEntity(): Promise<PriceEntity> {
     const priceEntity = new PriceEntity();
-    priceEntity.name = faker.commerce.productName();
-    priceEntity.code = faker.random.alphaNumeric(10);
-    priceEntity.imageUrl = faker.image.imageUrl();
     return this.repository.save(priceEntity);
   }
 }

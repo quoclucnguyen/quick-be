@@ -27,11 +27,7 @@ import { GiftsModule } from './gifts/gifts.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { CustomersModule } from './customers/customers.module';
 import { PricesModule } from './prices/prices.module';
-import { OutletsModule } from './outlets/outlets.module';
 // protected region Add additional imports here end
-
-import { BooksModule } from './books/books.module';
-import { AuthorsModule } from './authors/authors.module';
 
 // protected region Add other code in here on begin
 const configSchema = Joi.object({
@@ -62,6 +58,7 @@ const configSchema = Joi.object({
   JWT_SECRET: Joi.string().required(),
   JWT_EXPIRES: Joi.string().required(),
   SA_PASSWORD: Joi.string().required(),
+  LOG_REQUESTS: Joi.boolean().default(true),
 });
 
 @Module({
@@ -117,34 +114,35 @@ const configSchema = Joi.object({
     UploadsModule,
     CustomersModule,
     PricesModule,
-    OutletsModule,
-// protected region Add other code in here end
 
-    BooksModule,
-    AuthorsModule,
+    // protected region Add other code in here end
 
-// protected region Add end code in here on begin
-],
-controllers: [AppController],
-providers: [
-  AppService,
-  {
-    provide: APP_GUARD,
-    useClass: JwtAuthGuard,
-  },
-  {
-    provide: APP_INTERCEPTOR,
-    useClass: ClassSerializerInterceptor,
-  },
-  {
-    provide: APP_GUARD,
-    useClass: RolesGuard,
-  },
-],
+    // protected region Add end code in here on begin
+  ],
+  controllers: [AppController],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule {
-configure(consumer: MiddlewareConsumer) {
-  consumer.apply(LoggerMiddleware).forRoutes('*');
-}
+  constructor(private configService: ConfigService) {}
+
+  configure(consumer: MiddlewareConsumer) {
+    if (this.configService.get<boolean>('LOG_REQUESTS')) {
+      consumer.apply(LoggerMiddleware).forRoutes('*');
+    }
+  }
 }
 // protected region Add end code in here end

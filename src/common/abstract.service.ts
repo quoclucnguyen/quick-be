@@ -18,16 +18,10 @@ export abstract class AbstractService<E extends AbstractEntity> {
   ) {}
 
   async findAll(condition?: FindManyOptions<E>) {
-    this.logger.log(
-      `Finding all entities with condition ${JSON.stringify(condition)}`,
-    );
-
     return this.repository.find(condition);
   }
 
   async findAllWithOpts(opts?: FindManyOptions<E>) {
-    this.logger.log(`Finding all entities with opts ${JSON.stringify(opts)}`);
-
     return this.repository.find(
       opts
         ? {
@@ -42,28 +36,18 @@ export abstract class AbstractService<E extends AbstractEntity> {
   }
 
   async findOne(condition?: FindOneOptions<E>) {
-    this.logger.log(
-      `Finding entity with condition ${JSON.stringify(condition)}`,
-    );
-
     return this.repository.findOne(condition);
   }
 
   async findOneWithOpts(opts?: FindManyOptions<E>) {
-    this.logger.log(`Finding entity with opts ${JSON.stringify(opts)}`);
-
     return this.repository.findOne(opts);
   }
 
   async save(entity: E) {
-    this.logger.log(`Saving new entity`);
-
     return this.repository.save(entity as unknown as DeepPartial<E>);
   }
 
   async update(opts: FindOneOptions, diff: Partial<E>) {
-    this.logger.log(`Updating entity with id ${JSON.stringify(opts)}`);
-
     return this.repository
       .findOne(opts)
       .then((e) => this.repository.merge(e, diff as unknown as DeepPartial<E>))
@@ -71,8 +55,6 @@ export abstract class AbstractService<E extends AbstractEntity> {
   }
 
   async removeWithOpts(opts: FindManyOptions<E>) {
-    this.logger.log(`Removing entity with opts ${JSON.stringify(opts)}`);
-
     return this.findAllWithOpts(opts)
       .then((e) => this.repository.remove(e))
       .then((e) => {
@@ -81,14 +63,10 @@ export abstract class AbstractService<E extends AbstractEntity> {
   }
 
   async count() {
-    this.logger.log(`Counting all entities}`);
-
     return this.repository.count();
   }
 
   async countWithOpts(opts?: FindManyOptions<E>) {
-    this.logger.log(`Counting all entities with opts ${JSON.stringify(opts)}`);
-
     return this.repository.count(opts);
   }
 
