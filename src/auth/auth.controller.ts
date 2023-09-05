@@ -18,7 +18,7 @@ import { LoginDto } from './dto/login.dto';
 import { Public } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 import { ConfigService } from '@nestjs/config';
-import { BadRequestResponse } from 'src/common/response.type.common';
+import { BadRequestResponse } from '../common/response.type.common';
 
 @ApiTags('Auth')
 @Controller('auth')

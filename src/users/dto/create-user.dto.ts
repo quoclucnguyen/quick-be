@@ -16,6 +16,6 @@ export class CreateUserDto {
   password: string;
 
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({ type: 'enum', enum: UserRole })
   role: UserRole;
 }

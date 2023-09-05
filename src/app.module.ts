@@ -21,12 +21,7 @@ import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 import { LoggerMiddleware } from './common/logger.middleware';
-import { ProjectsModule } from './projects/projects.module';
-import { PartiesModule } from './parties/parties.module';
-import { GiftsModule } from './gifts/gifts.module';
 import { UploadsModule } from './uploads/uploads.module';
-import { CustomersModule } from './customers/customers.module';
-import { PricesModule } from './prices/prices.module';
 // protected region Add additional imports here end
 
 // protected region Add other code in here on begin
@@ -108,13 +103,7 @@ const configSchema = Joi.object({
     }),
     UsersModule,
     AuthModule,
-    ProjectsModule,
-    PartiesModule,
-    GiftsModule,
     UploadsModule,
-    CustomersModule,
-    PricesModule,
-
     // protected region Add other code in here end
 
     // protected region Add end code in here on begin
